@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-
+import '/src/css/BlogsPageStyle.css';
 const BlogsPage = () => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -77,17 +77,9 @@ const BlogsPage = () => {
                     <div className="blog-list">
                         {blogs.map(blog => (
                             <div key={blog.id} className="blog-card">
-                                <h2 className="blog-title">{blog.title}</h2>
-                                <p className="blog-author">By: {blog.author || 'Unknown'}</p>
                                 {blog.mainImageUrl !== null && (
                                     <div className="blog-image-container">
-                                        <img style={{
-                                            width: '100%',          // Makes all images fill the container width
-                                            height: '250px',        // Fixed height for all images
-                                            objectFit: 'cover'      // This ensures the image covers the area without distortion
-                                        }}
-
-                                             src={blog.mainImageUrl}
+                                        <img src={blog.mainImageUrl}
                                              alt={`Image for ${blog.title}`}
                                              className="blog-image"
                                              onError={(e) => {
@@ -96,8 +88,10 @@ const BlogsPage = () => {
                                              }}
                                         />
                                     </div>
-
                                 )}
+                                <h2 className="blog-title">{blog.title}</h2>
+                                <p className="blog-author">By: {blog.author || 'Unknown'}</p>
+
 
                                 <div className="blog-content">
                                     {blog.content}
