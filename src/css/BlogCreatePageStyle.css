@@ -1,0 +1,179 @@
+.tiptap-editor-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 70%;
+    margin: auto;
+  }
+  
+  .editor-menu-bar {
+    padding: 8px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .editor-menu-bar button {
+    padding: 5px 10px;
+    background-color: whitesmoke;
+    color: black;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .editor-menu-bar button:hover {
+    background-color: rgba(217,46,10,255);
+    color: white;
+  }
+  
+  .editor-menu-bar button.is-active {
+    background-color: #e6f7ff;
+    border-color: #1890ff;
+  }
+  
+  .tiptap-editor-content {
+    padding: 15px;
+    min-height: 300px;
+    background-color: whitesmoke;
+    color: black;
+  }
+  
+  .tiptap-editor-content:focus {
+    outline: none;
+  }
+  
+  .tiptap-editor-content img {
+    max-width: 50%;
+    max-height: 500px;
+    height: auto;
+  }
+  
+  .tiptap-editor-content blockquote {
+    border-left: 3px solid #7c7c7cbd;
+    margin-left: 0;
+    padding-left: 10px;
+    color: #666;
+  }
+  
+  .tiptap-editor-content pre {
+    background-color: #afafaf;
+    padding: 10px;
+    border-radius: 3px;
+    font-family: monospace;
+    overflow-x: auto;
+    color: whitesmoke;
+  }
+  .tiptap-editor-content ul, 
+  .tiptap-editor-content ol {
+    margin-left: 20px;
+  }
+
+
+  .content-preview {
+    margin-top: 40px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-width: 70%;
+    background-color: #f9f9f9;
+    margin: auto;
+  }
+  
+  .content-preview h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+  }
+  .preview-image
+  {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+  }
+  
+  .preview-title {
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #222;
+  }
+  
+  .preview-tags {
+    margin-bottom: 20px;
+  }
+  
+  .preview-tag {
+    display: inline-block;
+    background-color: #e6f7ff;
+    color: #1890ff;
+    padding: 2px 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .preview-content {
+    background-color: whitesmoke;
+    padding: 0px 15px;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    min-height: 200px;
+    color:black;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+  
+  /* Style elements inside the preview */
+  .preview-content img {
+    max-width: 35%;
+    height: auto;
+  }
+  
+  .preview-content h1, 
+  .preview-content h2, 
+  .preview-content h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .preview-content p {
+    line-height: 1.6;
+  }
+  
+  .preview-content ul, 
+  .preview-content ol {
+    margin-left: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .preview-content blockquote {
+    border-left: 3px solid #7c7c7cbd;
+    padding-left: 15px;
+    color: #666;
+    font-style: italic;
+    margin: 15px 0;
+  }
+  
+  .preview-content pre {
+    background-color: #afafaf;
+    padding: 10px;
+    border-radius: 4px;
+    color: whitesmoke;
+    font-family: monospace;
+  }
+  
+  .preview-content a {
+    color: #1890ff;
+    text-decoration: none;
+  }
+  
+  .preview-content a:hover {
+    text-decoration: underline;
+  }

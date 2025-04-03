@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import '/src/css/BlogsPageStyle.css';
-const BlogsPage = () => {
+const BlogsPage = ({onEditBlog}) => {
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -105,6 +105,7 @@ const BlogsPage = () => {
                                         <span className="blog-tag blog-tag-placeholder">No tags</span>
                                     )}
                                 </div>
+                                <button onClick={()=>{onEditBlog(blog.id)}}>Edit</button>
 
                                 <hr/>
                             </div>

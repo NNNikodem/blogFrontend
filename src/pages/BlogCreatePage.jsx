@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import TipTapEditor from '../components/TipTapEditor/TipTapEditor';
+import '../css/BlogCreatePageStyle.css'; // Import your CSS file for styling
 
 const BlogCreatePage = () => {
     const [title, setTitle] = useState('');
@@ -14,6 +16,10 @@ const BlogCreatePage = () => {
         if (e.target.files && e.target.files[0]) {
             setMainImage(e.target.files[0]);
         }
+    };
+
+    const handleEditorUpdate = (html) => {
+        setContent(html);
     };
 
     const handleSubmit = async (e) => {
@@ -43,7 +49,20 @@ const BlogCreatePage = () => {
         if (mainImage) {
             formData.append('mainImage', mainImage);
         }
-
+        console.log(content);
+        console.log("FormData contents:");
+for (let pair of formData.entries()) {
+    if (pair[0] === 'postRequestDto') {
+        // For the JSON blob, we can display its content
+        const reader = new FileReader();
+        reader.onload = function() {
+            console.log("postRequestDto content:", JSON.parse(reader.result));
+        };
+        reader.readAsText(pair[1]);
+    } else {
+        console.log(pair[0], pair[1]);
+    }
+}
         try {
             const result = await axios.post('http://localhost:8080/api/v1/blog', formData, {
                 headers: {
@@ -56,12 +75,13 @@ const BlogCreatePage = () => {
         } finally {
             setLoading(false);
         }
+
     };
 
     return (
         <div className="create-post-container">
             <h2>Create New Blog Post</h2>
-            <form onSubmit={handleSubmit}>
+            <form>
                 <div className="form-group">
                     <label htmlFor="title">Title:</label>
                     <input
@@ -75,13 +95,7 @@ const BlogCreatePage = () => {
 
                 <div className="form-group">
                     <label htmlFor="content">Content:</label>
-                    <textarea
-                        id="content"
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        rows="10"
-                        required
-                    />
+                    <TipTapEditor content={content} onUpdate={handleEditorUpdate} />
                 </div>
 
                 <div className="form-group">
@@ -105,10 +119,24 @@ const BlogCreatePage = () => {
                     />
                 </div>
 
-                <button type="submit" disabled={loading}>
+                <button type="submit" disabled={loading} onClick={handleSubmit}>
                     {loading ? 'Creating...' : 'Create Post'}
                 </button>
             </form>
+            <div className="content-preview">
+                <h3>Live Preview</h3>
+                {mainImage && <img className='preview-image' src={URL.createObjectURL(mainImage)} alt="Main" />}
+                <h2 className="preview-title">{title || 'Title will appear here'}</h2>
+                <div className="preview-tags">
+                    {tags.split(',').map((tag, index) => (
+                        tag.trim() && <span key={index} className="preview-tag">{tag.trim()}</span>
+                    ))}
+                </div>
+                <div 
+                    className="preview-content"
+                    dangerouslySetInnerHTML={{ __html: content || '<p>Your content will appear here...</p>' }} 
+                />
+            </div>
 
             {error && (
                 <div className="error-message">
@@ -126,4 +154,5 @@ const BlogCreatePage = () => {
         </div>
     );
 };
+
 export default BlogCreatePage;
