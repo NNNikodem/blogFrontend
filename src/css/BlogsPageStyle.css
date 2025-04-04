@@ -4,11 +4,20 @@
     --alt-font: "Plus Jakarta Sans", sans-serif;
     --primary-font: "Inter", sans-serif;
     --bg-blog-normal: #edf0f1;
+    --bg-feitCity-normal: rgba(217,46,10,1);
+    --bg-feitCity-hover: rgba(217,46,10,0.8);
 }
 *{
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+.blogs-container{
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* 3/4 pre main, 1/4 pre aside */
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
 }
 main{
     font-family: var(--primary-font);
@@ -17,12 +26,7 @@ h1{
     text-align: center;
 }
 
-.blog-list
-{
-    width: 50%;
-    margin-left: 10%;
 
-}
 .blog-card
 {
     margin-top: 50px;
@@ -41,11 +45,35 @@ h1{
 .blog-image-container img:hover {
     transform: scale(1.25);
 }
-.blog-title, .blog-author, .blog-content, .blog-tags{
+.blog-title
+{
     padding: 2%;
 }
-.blog-author, .blog-content, .blog-tags
-{
-    color: gray;
+.blog-published, .blog-content, .blog-tags, .blog-date{
+    padding: 2%;
+    color:gray;
+}
+.sidebar{
+    position:sticky;
+    top:10%;
+    margin-top: 10%;
+}
+.tags-container{
+    margin-top: 20px;
+    font: var(--alt-font);
+}
+.tags-list{
+    list-style: none;
+}
+.tags-list-button{
+    max-width: 50%;
+    margin: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: whitesmoke;
+}
+.tags-list-button:hover{
+    background-color: var(--bg-feitCity-normal);
+    cursor: pointer;
 }
 

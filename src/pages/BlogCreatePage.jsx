@@ -79,79 +79,82 @@ for (let pair of formData.entries()) {
     };
 
     return (
-        <div className="create-post-container">
-            <h2>Create New Blog Post</h2>
-            <form>
-                <div className="form-group">
-                    <label htmlFor="title">Title:</label>
-                    <input
-                        type="text"
-                        id="title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
+        <main>
+            <h1>Create New Blog Post</h1>
+            <div className="create-post-container">
+                
+                <form>
+                    <div className="form-group">
+                        <label htmlFor="title">Title:</label>
+                        <input
+                            type="text"
+                            id="title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="content">Content:</label>
+                        <TipTapEditor content={content} onUpdate={handleEditorUpdate} />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="tags">Tags (comma separated):</label>
+                        <input
+                            type="text"
+                            id="tags"
+                            value={tags}
+                            onChange={(e) => setTags(e.target.value)}
+                            placeholder="tag1, tag2, tag3"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="mainImage">Main Image:</label>
+                        <input
+                            type="file"
+                            id="mainImage"
+                            onChange={handleImageChange}
+                            accept="image/*"
+                        />
+                    </div>
+
+                    <button type="submit" disabled={loading} onClick={handleSubmit}>
+                        {loading ? 'Creating...' : 'Create Post'}
+                    </button>
+                </form>
+                <div className="content-preview">
+                    <h3>Live Preview</h3>
+                    {mainImage && <img className='preview-image' src={URL.createObjectURL(mainImage)} alt="Main" />}
+                    <h2 className="preview-title">{title || 'Title will appear here'}</h2>
+                    <div className="preview-tags">
+                        {tags.split(',').map((tag, index) => (
+                            tag.trim() && <span key={index} className="preview-tag">{tag.trim()}</span>
+                        ))}
+                    </div>
+                    <div 
+                        className="preview-content"
+                        dangerouslySetInnerHTML={{ __html: content || '<p>Your content will appear here...</p>' }} 
                     />
                 </div>
 
-                <div className="form-group">
-                    <label htmlFor="content">Content:</label>
-                    <TipTapEditor content={content} onUpdate={handleEditorUpdate} />
-                </div>
+                {error && (
+                    <div className="error-message">
+                        <h3>Error:</h3>
+                        <pre>{JSON.stringify(error, null, 2)}</pre>
+                    </div>
+                )}
 
-                <div className="form-group">
-                    <label htmlFor="tags">Tags (comma separated):</label>
-                    <input
-                        type="text"
-                        id="tags"
-                        value={tags}
-                        onChange={(e) => setTags(e.target.value)}
-                        placeholder="tag1, tag2, tag3"
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="mainImage">Main Image:</label>
-                    <input
-                        type="file"
-                        id="mainImage"
-                        onChange={handleImageChange}
-                        accept="image/*"
-                    />
-                </div>
-
-                <button type="submit" disabled={loading} onClick={handleSubmit}>
-                    {loading ? 'Creating...' : 'Create Post'}
-                </button>
-            </form>
-            <div className="content-preview">
-                <h3>Live Preview</h3>
-                {mainImage && <img className='preview-image' src={URL.createObjectURL(mainImage)} alt="Main" />}
-                <h2 className="preview-title">{title || 'Title will appear here'}</h2>
-                <div className="preview-tags">
-                    {tags.split(',').map((tag, index) => (
-                        tag.trim() && <span key={index} className="preview-tag">{tag.trim()}</span>
-                    ))}
-                </div>
-                <div 
-                    className="preview-content"
-                    dangerouslySetInnerHTML={{ __html: content || '<p>Your content will appear here...</p>' }} 
-                />
+                {response && (
+                    <div className="success-message">
+                        <h3>Post Created Successfully:</h3>
+                        <pre>{JSON.stringify(response, null, 2)}</pre>
+                    </div>
+                )}
             </div>
-
-            {error && (
-                <div className="error-message">
-                    <h3>Error:</h3>
-                    <pre>{JSON.stringify(error, null, 2)}</pre>
-                </div>
-            )}
-
-            {response && (
-                <div className="success-message">
-                    <h3>Post Created Successfully:</h3>
-                    <pre>{JSON.stringify(response, null, 2)}</pre>
-                </div>
-            )}
-        </div>
+        </main>
     );
 };
 

@@ -13,6 +13,11 @@ function App() {
         setBlogId(blogId);
         setPageToDisplay(3);
     }
+    const handleSelectTag = (tagName) => {
+        console.log(tagName);
+        // Here you can implement the logic to filter blogs based on the selected tag
+        // For example, you can call an API to fetch blogs with the selected tag
+    }
     const handleSelect = (selectedValue) => {
         if (selectedValue === "home") {
             window.location.href = "https://feitcity.sk/";
@@ -25,10 +30,11 @@ function App() {
             setPageToDisplay(2);
         }
     }
-    const pages = [<BlogsPage key={0} onEditBlog={handleEditBlog}/>,
+    const pages = [<BlogsPage key={0} onEditBlog={handleEditBlog} onSelectTag={handleSelectTag}/>,
         <BlogCreatePage key={1}/>,
         <LoginPage key={2}/>,
-        <BlogEditPage key={3} blogId={blogId}/>];
+        <BlogEditPage key={3} blogId={blogId}/>,
+    ];
     let content = pages[pageToDisplay];
     return (
         <div>

@@ -58,25 +58,8 @@ const BlogEditPage = ({ onEdit, blogId }) => {
       // Create a copy of the blog data for the update
       const updatedBlog = { ...blogData };
       
-      // Normalize both arrays for accurate comparison
-      const currentTags = blogData.tags || [];
-      const origTags = originalTags || [];
-      
-      // Sort both arrays for proper comparison
-      const sortedCurrentTags = [...currentTags].sort();
-      const sortedOriginalTags = [...origTags].sort();
-      
-      // Compare arrays
-      const tagsEqual = JSON.stringify(sortedCurrentTags) === JSON.stringify(sortedOriginalTags);
-      
-      // Only include tags if they've changed
-      if (tagsEqual) {
-        // Tags haven't changed, remove them from the update payload
-        delete updatedBlog.tags;
-        console.log("Tags unchanged, not sending in request");
-      } else {
-        console.log("Tags changed, including in request");
-      }
+      // Always send tags with the update
+      console.log("Sending blog update with tags:", updatedBlog.tags);
       
       console.log("Updated blog:", updatedBlog);
       const response = await axios.put(

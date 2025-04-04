@@ -1,10 +1,4 @@
 import React, { useRef } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import CodeBlock from '@tiptap/extension-code-block';
-import Placeholder from '@tiptap/extension-placeholder';
 import axios from 'axios';
 
 const MenuBar = ({ editor }) => {
