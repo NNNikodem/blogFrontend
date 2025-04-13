@@ -1,0 +1,40 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap");
+:root {
+  --alt-font: "Plus Jakarta Sans", sans-serif;
+  --primary-font: "Inter", sans-serif;
+  --bg-blog-normal: #edf0f1;
+  --bg-feitCity-normal: rgba(217, 46, 10, 1);
+  --bg-feitCity-hover: rgba(217, 46, 10, 0.8);
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.blog-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.blog-detail-main {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 2rem;
+}
+.blog-detail-container main {
+  background-color: var(--bg-blog-normal);
+  color: gray;
+}
+
+.blog-detail-content,
+.blog-detail-title,
+.blog-detail-published {
+  padding: 1rem;
+}
+.blog-detail-content img {
+  max-width: 50%;
+  height: auto;
+  border-radius: 8px;
+}
