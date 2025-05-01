@@ -1,5 +1,5 @@
 // This module provides helper functions for making API requests using fetch.
-// It includes functions for GET and POST requests, as well as loading and error state management.
+// It includes functions for GET, POST, and PUT requests, as well as loading and error state management.
 let loading = false;
 let error = null;
 
@@ -41,13 +41,21 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
   error = null;
 
   try {
+    // Check if we're dealing with FormData (for multipart/form-data requests)
+    const isFormData = body instanceof FormData;
+
+    // Set up headers based on content type
+    const headers = isFormData 
+      ? { ...(options.headers || {}) } // Don't set Content-Type for FormData, browser will set it with boundary
+      : { 
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        };
+
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
-      body: JSON.stringify(body),
+      headers,
+      body: isFormData ? body : JSON.stringify(body),
       ...options,
     });
 
@@ -63,6 +71,71 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
     return null;
   } finally {
     loading = false;
+  }
+};
+
+// Example modification for putRequest in apiAccessHelper.js
+export const putRequest = async (endpoint, body) => {
+  const url = `${BASE_URL}${endpoint}`;
+  console.log(`Sending PUT request to: ${url}`);
+  console.log('Request body:', body);
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add authorization headers if needed
+        // 'Authorization': `Bearer ${getToken()}`
+      },
+      body: JSON.stringify(body),
+    });
+
+    console.log(`PUT request to ${url} status: ${response.status}`);
+
+    if (!response.ok) {
+      // Try to get error details from the response body
+      let errorBody;
+      try {
+        errorBody = await response.text(); // Read as text first
+        console.error(`Error response body from ${url}:`, errorBody);
+        // Attempt to parse as JSON if it looks like JSON
+        if (errorBody && response.headers.get('content-type')?.includes('application/json')) {
+          errorBody = JSON.parse(errorBody);
+        }
+      } catch (e) {
+        console.error('Could not parse error response body:', e);
+        errorBody = `HTTP error! status: ${response.status}`;
+      }
+      throw new Error(typeof errorBody === 'string' ? errorBody : JSON.stringify(errorBody));
+    }
+
+    // Check if the response has content before parsing
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
+
+    // Handle 204 No Content or responses with no content length/type indicating no body
+    if (response.status === 204 || !contentType || !contentLength || parseInt(contentLength, 10) === 0) {
+      console.log(`PUT request to ${url} successful with no content.`);
+      return null; // Or return an empty object or a success indicator: { success: true }
+    }
+
+    // If there is content and it's JSON, parse it
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json(); // This is line 92 where the original error likely occurred
+      console.log(`PUT request to ${url} successful. Response data:`, data);
+      return data;
+    } else {
+      // Handle non-JSON responses if necessary
+      const textData = await response.text();
+      console.log(`PUT request to ${url} successful. Response text data:`, textData);
+      return textData;
+    }
+
+  } catch (error) {
+    console.error(`PUT request error for ${url}:`, error); // Log the specific error
+    // Re-throw the error to be caught by the calling function (updateComponent)
+    throw error;
   }
 };
 

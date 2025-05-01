@@ -22,6 +22,9 @@ const BlogHeader = ({onSelect}) => {
                     <NavButton onSelect={() => {
                                     onSelect("createBlog");
                     }}>Pridaj Blog</NavButton>
+                    <NavButton onSelect={() => {
+                                    onSelect("components");
+                    }}>Komponenty</NavButton>
                 </ul>
             </nav>
             <button onClick={() => {

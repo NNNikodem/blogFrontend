@@ -1,0 +1,217 @@
+/* ComponentsManagementPage.css */
+
+.components-management-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.components-management-page h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.components-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.component-editor {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.component-editor h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #444;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.component-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Styles for nested groups */
+.nested-group {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.nested-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.nested-header:hover {
+  background-color: #e6e6e6;
+}
+
+.nested-header label {
+  margin: 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.expand-icon {
+  font-size: 12px;
+  color: #666;
+}
+
+.nested-content {
+  padding: 15px;
+  background-color: #fff;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Styles for array items */
+.array-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.array-item-header {
+  background-color: #f5f5f5;
+  padding: 8px 12px;
+  font-weight: bold;
+  color: #444;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.array-item input,
+.nested-object {
+  padding: 10px;
+}
+
+.nested-object {
+  background-color: #fafafa;
+}
+
+/* Checkbox styling */
+.checkbox-group {
+  flex-direction: row;
+  align-items: center;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-right: 8px;
+  width: auto;
+  cursor: pointer;
+}
+
+/* Input type specific styling */
+input[type="number"] {
+  width: 100%;
+}
+
+input[type="date"] {
+  width: 100%;
+}
+
+.save-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 20px;
+  align-self: flex-end;
+  transition: background-color 0.3s;
+}
+
+.save-button:hover {
+  background-color: #45a049;
+}
+
+.save-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.loading {
+  color: #2196f3;
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: #f44336;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.success {
+  color: #4caf50;
+  background-color: #e8f5e9;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.date-format-hint {
+  color: #ff9800;
+  font-size: 12px;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .components-management-page {
+    padding: 10px;
+  }
+
+  .component-editor {
+    padding: 15px;
+  }
+
+  .nested-content {
+    padding: 10px;
+  }
+}

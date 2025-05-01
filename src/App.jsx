@@ -6,6 +6,7 @@ import BlogHeader from "./components/BlogHeader.jsx";
 import { useState } from "react";
 import BlogEditPage from "./pages/BlogEditPage.jsx";
 import BlogDetailPage from "./pages/BlogDetailPage.jsx";
+import ComponentsManagementPage from "./pages/ComponentsManagementPage.jsx";
 
 function App() {
   const [pageToDisplay, setPageToDisplay] = useState(0);
@@ -30,6 +31,8 @@ function App() {
       setPageToDisplay(1);
     } else if (selectedValue === "login") {
       setPageToDisplay(2);
+    } else if (selectedValue === "components") {
+      setPageToDisplay(5);
     }
   };
   const pages = [
@@ -43,6 +46,7 @@ function App() {
     <LoginPage key={2} />,
     <BlogEditPage key={3} blogId={blogId} />,
     <BlogDetailPage key={4} id={blogId} />,
+    <ComponentsManagementPage key={5} />,
   ];
   let content = pages[pageToDisplay];
   return (
