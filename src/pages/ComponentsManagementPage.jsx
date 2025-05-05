@@ -101,7 +101,7 @@ const ComponentsManagementPage = () => {
       } else {
         // Use the appropriate HTTP method based on the component name
         console.log(`Sending request to update ${componentName}`);
-        data = usesPut 
+        data = usesPut
           ? await putRequest(`components/${componentName}`, componentData)
           : await postRequest(`components/${componentName}`, componentData);
       }
@@ -183,50 +183,85 @@ const ComponentsManagementPage = () => {
 
       // Handle arrays
       if (Array.isArray(value)) {
-        return (
-          <div key={currentPath.join('.')} className="form-group nested-group">
-            <div className="nested-header" onClick={() => toggleExpand(currentPath)}>
-              <label>{key} (Array - {value.length} items)</label>
-              <span className="expand-icon">{isExpanded(currentPath) ? '▼' : '►'}</span>
-            </div>
+        const isMenuItemsPath = componentName === "menu" && key === "menuItems";
+        const isDropdownSubItemsPath =
+            componentName === "menu" &&
+            path.length === 2 &&
+            path[0] === "dropdownMenuItems" &&
+            path[1] === 0 &&
+            key === "dropdownMenuItems";
 
-            {isExpanded(currentPath) && (
-              <div className="nested-content">
-                {value.map((item, index) => {
-                  const itemPath = [...currentPath, index];
-                  return (
-                    <div key={itemPath.join('.')} className="array-item">
-                      <div className="array-item-header">
-                        <span>Item {index + 1}</span>
-                      </div>
-                      {typeof item === 'object' && item !== null ? (
-                        <div className="nested-object">
-                          {Object.entries(item).map(([itemKey, itemValue]) => 
-                            renderFormField(itemKey, itemValue, itemPath)
-                          )}
-                        </div>
-                      ) : (
-                        <input
-                          type="text"
-                          value={item || ""}
-                          onChange={(e) => {
-                            const newValue = e.target.value;
-                            const updatedComponent = JSON.parse(JSON.stringify(editedComponent));
-                            let current = updatedComponent;
-                            for (let i = 0; i < path.length; i++) {
-                              current = current[path[i]];
-                            }
-                            current[key][index] = newValue;
-                            setEditedComponent(updatedComponent);
-                          }}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
+        return (
+            <div key={currentPath.join('.')} className="form-group nested-group">
+              <div className="nested-header" onClick={() => toggleExpand(currentPath)}>
+                <label>{key} (Array - {value.length} items)</label>
+                <span className="expand-icon">{isExpanded(currentPath) ? '▼' : '►'}</span>
               </div>
-            )}
-          </div>
+
+              {isExpanded(currentPath) && (
+                  <div className="nested-content">
+                    {value.map((item, index) => {
+                      const itemPath = [...currentPath, index];
+                      return (
+                          <div key={itemPath.join('.')} className="array-item">
+                            <div className="array-item-header">
+                              <span>Item {index + 1}</span>
+                            </div>
+                            {typeof item === 'object' && item !== null ? (
+                                <div className="nested-object">
+                                  {Object.entries(item).map(([itemKey, itemValue]) =>
+                                      renderFormField(itemKey, itemValue, itemPath)
+                                  )}
+                                </div>
+                            ) : (
+                                <input
+                                    type="text"
+                                    value={item || ""}
+                                    onChange={(e) => {
+                                      const newValue = e.target.value;
+                                      const updatedComponent = JSON.parse(JSON.stringify(editedComponent));
+                                      let current = updatedComponent;
+                                      for (let i = 0; i < path.length; i++) {
+                                        current = current[path[i]];
+                                      }
+                                      current[key][index] = newValue;
+                                      setEditedComponent(updatedComponent);
+                                    }}
+                                />
+                            )}
+                          </div>
+                      );
+                    })}
+
+
+
+                    {(isMenuItemsPath || isDropdownSubItemsPath) && (
+                        <button
+                            className="add-button"
+                            onClick={() => {
+                              const updatedComponent = JSON.parse(JSON.stringify(editedComponent));
+                              let current = updatedComponent;
+
+                              for (let i = 0; i < currentPath.length - 1; i++) {
+                                current = current[currentPath[i]];
+                              }
+
+                              current[key].push({
+                                text: "",
+                                url: "",
+                                id: current[key].length + 1 // nastav nový ID
+                              });
+
+                              setEditedComponent(updatedComponent);
+                            }}
+                            style={{ marginTop: '10px' }}
+                        >
+                          + Add {isMenuItemsPath ? "Menu Item" : "Dropdown Subitem"}
+                        </button>
+                    )}
+                  </div>
+              )}
+            </div>
         );
       }
 
@@ -241,7 +276,7 @@ const ComponentsManagementPage = () => {
 
             {isExpanded(currentPath) && (
               <div className="nested-content">
-                {Object.entries(value).map(([objKey, objValue]) => 
+                {Object.entries(value).map(([objKey, objValue]) =>
                   renderFormField(objKey, objValue, currentPath)
                 )}
               </div>
@@ -424,12 +459,12 @@ const ComponentsManagementPage = () => {
         {success[componentName] && <div className="success">Component updated successfully!</div>}
 
         <div className="component-form">
-          {Object.entries(editedComponent).map(([key, value]) => 
+          {Object.entries(editedComponent).map(([key, value]) =>
             renderFormField(key, value)
           )}
 
-          <button 
-            className="save-button" 
+          <button
+            className="save-button"
             onClick={handleSave}
             disabled={loading[componentName]}
           >
@@ -445,108 +480,108 @@ const ComponentsManagementPage = () => {
       <h1>Components Management</h1>
 
       <div className="components-container">
-        <ComponentEditor 
-          title="Footer" 
-          componentName="footer" 
-          component={footer} 
-          setComponent={setFooter} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Footer"
+          componentName="footer"
+          component={footer}
+          setComponent={setFooter}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="FAQ Component" 
-          componentName="faqcomponent" 
-          component={faqComponent} 
-          setComponent={setFaqComponent} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="FAQ Component"
+          componentName="faqcomponent"
+          component={faqComponent}
+          setComponent={setFaqComponent}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Other Activities" 
-          componentName="otheractivities" 
-          component={otherActivities} 
-          setComponent={setOtherActivities} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Other Activities"
+          componentName="otheractivities"
+          component={otherActivities}
+          setComponent={setOtherActivities}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Logo Component" 
-          componentName="logocomponent" 
-          component={logoComponent} 
-          setComponent={setLogoComponent} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Logo Component"
+          componentName="logocomponent"
+          component={logoComponent}
+          setComponent={setLogoComponent}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="After School" 
-          componentName="afterschool" 
-          component={afterSchool} 
-          setComponent={setAfterSchool} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="After School"
+          componentName="afterschool"
+          component={afterSchool}
+          setComponent={setAfterSchool}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="FEIT Story" 
-          componentName="feitstory" 
-          component={feitStory} 
-          setComponent={setFeitStory} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="FEIT Story"
+          componentName="feitstory"
+          component={feitStory}
+          setComponent={setFeitStory}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Slider" 
-          componentName="slider" 
-          component={slider} 
-          setComponent={setSlider} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Slider"
+          componentName="slider"
+          component={slider}
+          setComponent={setSlider}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Feature Boxes" 
-          componentName="featureboxs" 
-          component={featureBoxes} 
-          setComponent={setFeatureBoxes} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Feature Boxes"
+          componentName="featureboxs"
+          component={featureBoxes}
+          setComponent={setFeatureBoxes}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="DOD Component" 
-          componentName="dod" 
-          component={dodComponent} 
-          setComponent={setDodComponent} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="DOD Component"
+          componentName="dod"
+          component={dodComponent}
+          setComponent={setDodComponent}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Why FEIT" 
-          componentName="whyfeit" 
-          component={whyFeit} 
-          setComponent={setWhyFeit} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Why FEIT"
+          componentName="whyfeit"
+          component={whyFeit}
+          setComponent={setWhyFeit}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Countdown" 
-          componentName="countdown" 
-          component={countdown} 
-          setComponent={setCountdown} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Countdown"
+          componentName="countdown"
+          component={countdown}
+          setComponent={setCountdown}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Video" 
-          componentName="video" 
-          component={video} 
-          setComponent={setVideo} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Video"
+          componentName="video"
+          component={video}
+          setComponent={setVideo}
+          updateFn={updateComponent}
         />
 
-        <ComponentEditor 
-          title="Menu" 
-          componentName="menu" 
-          component={menu} 
-          setComponent={setMenu} 
-          updateFn={updateComponent} 
+        <ComponentEditor
+          title="Menu"
+          componentName="menu"
+          component={menu}
+          setComponent={setMenu}
+          updateFn={updateComponent}
         />
       </div>
     </main>

@@ -215,3 +215,8 @@ input[type="date"] {
     padding: 10px;
   }
 }
+
+.add-button {
+  background-color: black;
+    color: white;
+}
