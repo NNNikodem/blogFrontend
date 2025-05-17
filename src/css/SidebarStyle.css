@@ -1,0 +1,363 @@
+.blog-sidebar {
+  position: fixed;
+  left: 0;
+  top: 95px;
+  width: 200px;
+  height: calc(100vh - 95px);
+  background-color: rgba(23, 22, 26, 1);
+  border-right: 1px solid #e0e0e0;
+  padding: 20px 0;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.sidebar-nav-links {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  width: 100%;
+}
+
+/* Simplified sidebar nav item styles */
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: #fff;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 60px; /* Reduced from 100px */
+}
+
+.sidebar-nav-item a {
+  display: flex;
+  color: #fff;
+  text-decoration: none;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding-left: 20px;
+}
+
+/* Fix for active links */
+.sidebar-nav-item:has(a.active),
+.sidebar-nav-item.active {
+  background-color: rgba(40, 40, 45, 1);
+  border-left: 3px solid rgba(217, 46, 10, 1); /* Explicit full border declaration */
+}
+
+/* Hover state */
+.sidebar-nav-item:hover {
+  background-color: rgba(40, 40, 45, 1);
+  border-left: 3px solid rgba(217, 46, 10, 1);
+}
+
+.sidebar-nav-icon {
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-container {
+  display: flex;
+  flex: 1;
+  margin-top: 95px; /* Match header height */
+  position: relative;
+}
+.with-tags-sidebar .main-content {
+  margin-right: 250px; /* Adjust for tags sidebar */
+}
+.with-component-sidebar .main-content {
+  margin-right: 250px; /* Adjust for component sidebar */
+}
+
+.main-content {
+  flex: 1;
+  max-width: 95%;
+  margin-left: 200px; /* Match sidebar width */
+  margin-right: 60px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Tags sidebar styling */
+.tags-sidebar {
+  position: fixed;
+  right: 0;
+  top: 95px;
+  width: 250px;
+  height: calc(100vh - 95px);
+  background-color: rgba(23, 22, 26, 1);
+  border-left: 1px solid #e0e0e0;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.tags-sidebar h3 {
+  color: #fff;
+  margin-bottom: 15px;
+}
+
+/* Component sidebar styling - matches tags sidebar */
+.component-sidebar {
+  position: fixed;
+  right: 0;
+  top: 95px;
+  width: 250px;
+  height: calc(100vh - 95px);
+  background-color: rgba(23, 22, 26, 1);
+  border-left: 1px solid #e0e0e0;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  z-index: 100;
+  font-family: var(--alt-font);
+  padding: 20px;
+}
+
+.component-sidebar h3 {
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.component-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.component-list li {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  color: #fff;
+}
+
+.component-list li:hover {
+  background-color: rgba(40, 40, 45, 1);
+  border-left: 3px solid rgba(217, 46, 10, 1);
+}
+
+.component-list li.active {
+  background-color: rgba(40, 40, 45, 1);
+  border-left: 3px solid rgba(217, 46, 10, 1);
+  color: white;
+}
+
+/* Mobile sidebar toggle buttons */
+.sidebar-toggle,
+.tags-sidebar-toggle,
+.component-sidebar-toggle {
+  display: none;
+  position: fixed;
+  z-index: 101;
+  background-color: rgba(217, 46, 10, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-toggle {
+  left: 10px;
+  top: 105px;
+}
+
+.tags-sidebar-toggle {
+  right: 10px;
+  top: 105px;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 1100px) {
+  /* Reduced sidebar with icons only */
+  .blog-sidebar {
+    width: 60px;
+  }
+
+  .sidebar-nav-item {
+    padding: 12px;
+    justify-content: center;
+  }
+
+  .sidebar-nav-item span {
+    display: none;
+  }
+
+  .sidebar-nav-icon {
+    margin-right: 0;
+    font-size: 1.4rem;
+  }
+
+  /* Adjust main content with icon sidebar */
+  .main-content {
+    margin-left: 60px;
+    margin-right: 60px;
+    width: 90%;
+  }
+
+  /* Reduce tags sidebar width */
+  .tags-sidebar {
+    width: 180px;
+  }
+
+  .with-tags-sidebar .main-content {
+    margin-right: 180px;
+  }
+
+  /* Reduce component sidebar width - like tags sidebar */
+  .component-sidebar {
+    width: 180px;
+  }
+
+  .with-component-sidebar .main-content {
+    margin-right: 180px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  /* Adjust main content when both sidebars are present */
+  .main-content {
+    margin-left: 50px;
+    margin-right: 0;
+  }
+
+  .with-tags-sidebar .main-content {
+    margin-right: 170px;
+  }
+
+  .with-component-sidebar .main-content {
+    margin-right: 170px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* For tablets and smaller screens */
+  .blog-sidebar,
+  .tags-sidebar,
+  .component-sidebar {
+    width: 80%;
+    max-width: 300px;
+  }
+
+  .blog-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .tags-sidebar {
+    transform: translateX(100%);
+  }
+
+  .component-sidebar {
+    transform: translateX(100%);
+  }
+
+  .blog-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .tags-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .component-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .with-tags-sidebar .main-content {
+    margin-right: 0;
+  }
+
+  .with-component-sidebar .main-content {
+    margin-right: 0;
+  }
+
+  /* Show toggle buttons */
+  .sidebar-toggle,
+  .tags-sidebar-toggle,
+  .component-sidebar-toggle {
+    display: flex;
+  }
+
+  /* Add overlay when sidebar is open */
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 95px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  .sidebar-overlay.visible {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  /* For mobile phones */
+  .blog-sidebar,
+  .tags-sidebar,
+  .component-sidebar {
+    width: 85%;
+  }
+
+  .main-content {
+    padding: 15px 10px;
+  }
+}
+
+/* Fix for the 768px to 980px range - add this between your existing media queries */
+@media screen and (min-width: 769px) and (max-width: 980px) {
+  /* Main content adjustments */
+  .main-content {
+    margin-left: 60px;
+  }
+
+  .with-tags-sidebar .main-content {
+    margin-right: 180px; /* Make sure right margin is applied */
+  }
+
+  .with-component-sidebar .main-content {
+    margin-right: 180px; /* Make sure right margin is applied */
+  }
+
+  /* Ensure tags sidebar is visible and positioned correctly */
+  .tags-sidebar {
+    width: 180px;
+    transform: none;
+  }
+
+  /* Ensure component sidebar is visible and positioned correctly */
+  .component-sidebar {
+    width: 180px;
+    transform: none;
+  }
+}

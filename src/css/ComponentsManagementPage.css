@@ -4,6 +4,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  position: relative;
 }
 
 .components-management-page h1 {
@@ -201,7 +202,33 @@ input[type="date"] {
   font-style: italic;
 }
 
-/* Responsive adjustments */
+/* New styles for component layout */
+.components-layout {
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 150px);
+  margin-top: 20px;
+}
+
+.component-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.loading-component {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 18px;
+  color: #666;
+}
+
+/* Media query for mobile */
 @media (max-width: 768px) {
   .components-management-page {
     padding: 10px;
@@ -214,9 +241,34 @@ input[type="date"] {
   .nested-content {
     padding: 10px;
   }
+
+  .components-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .component-content {
+    width: 100%;
+  }
+
+  .with-component-sidebar .main-component-content {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  /* Add overlay for mobile */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
 }
 
 .add-button {
   background-color: black;
-    color: white;
+  color: white;
 }

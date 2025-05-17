@@ -1,8 +1,14 @@
-const TagButton = ({ tagName, onSelect }) => {
+import React from "react";
+
+const TagButton = ({ tagName, isActive, onSelectTag }) => {
   return (
-    //li tag
-    <li className="tags-list-button" onClick={() => onSelect(0, tagName)}>
-      {tagName}
+    <li>
+      <button
+        className={`tags-list-button ${isActive ? "active" : ""}`}
+        onClick={() => onSelectTag(tagName)}
+      >
+        {tagName}
+      </button>
     </li>
   );
 };

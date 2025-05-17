@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import TipTapEditor from "../components/TipTapEditor/TipTapEditor";
 import "../css/BlogCreatePageStyle.css"; // Import your CSS file for styling
@@ -126,6 +126,7 @@ const BlogCreatePage = ({ onBlogCreated }) => {
             </button>
           </div>
         </form>
+        {/** 
         <h1>Náhľad</h1>
         <div className="content-preview">
           {mainImage && (
@@ -154,7 +155,7 @@ const BlogCreatePage = ({ onBlogCreated }) => {
               __html: content || "<p>Obsah...</p>",
             }}
           />
-        </div>
+        </div>*/}
 
         {error && (
           <div className="error-message">

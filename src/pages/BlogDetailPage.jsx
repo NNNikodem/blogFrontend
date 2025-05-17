@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from "react";
-//import { useNavigate, useParams } from "react-router-dom";
 import { getRequest, isLoading, getError } from "../api/apiAccessHelper";
 import "../css/BlogDetailPageStyle.css";
 import TagList from "../components/TagsList";
-
-const BlogDetailPage = ({ id }) => {
+import { useParams } from "react-router-dom";
+const BlogDetailPage = () => {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  let formattedDate = "";
   //const navigate = useNavigate();
-  const [blogId, setBlogId] = useState(id);
+  const { blogId } = useParams();
+  if (blog) {
+    formattedDate = blog.createdAt
+      ? new Date(blog.createdAt).toLocaleDateString("sk-SK", {
+          day: "2-digit",
+          month: "long",
+          year: "numeric",
+        })
+      : "Date unavailable";
+  }
 
   useEffect(() => {
     const fetchBlogDetails = async () => {
@@ -88,36 +96,22 @@ const BlogDetailPage = ({ id }) => {
   }
 
   return (
-    <div className="blog-detail-container">
-      <header>
-        <h1>{blog.title}</h1>
-      </header>
-      <div className="blog-detail-main">
-        <main>
-          <div className="blog-detail-image-container">
-            <img src={blog.mainImageUrl} alt="" />
-          </div>
-          <h1 className="blog-detail-title">{blog.title}</h1>
-          <div className="blog-detail-meta">
-            <span className="blog-detail-published">
-              By: {blog.author}, {new Date(blog.createdAt).toLocaleDateString()}
-            </span>
-          </div>
-          <div
-            className="blog-detail-content"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          />
-        </main>
-        <aside>
-          <nav className="sidebar">
-            {/* <h3>Search</h3>
-            <input type="text" placeholder="Search blogs..." /> */}
-            <hr />
-            <TagList onSelectTag={handleFetchBlogsByTag} />
-          </nav>
-        </aside>
+    <>
+      <div className="blog-detail-container">
+        <div className="blog-detail-image-container">
+          <img src={blog.mainImageUrl} alt="" />
+          <span>{formattedDate}</span>
+        </div>
+        <h1 className="blog-detail-title">{blog.title}</h1>
+        <div className="blog-detail-meta">
+          <span className="blog-detail-published">By: {blog.author}</span>
+        </div>
+        <div
+          className="blog-detail-content"
+          dangerouslySetInnerHTML={{ __html: blog.content }}
+        />
       </div>
-    </div>
+    </>
   );
 };
 

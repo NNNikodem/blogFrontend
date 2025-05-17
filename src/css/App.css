@@ -1,4 +1,6 @@
 :root {
-  background-color: rgba(23, 22, 26, 1);
+  --bg-color: rgba(23, 22, 26, 1);
+  --orange-color: 217, 46, 10;
+  background-color: var(--bg-color);
   color: white;
 }

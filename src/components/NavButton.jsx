@@ -1,10 +1,11 @@
-import "/src/css/BlogHeaderStyle.css"
+import "/src/css/BlogHeaderStyle.css";
+import { Link } from "react-router-dom";
 
-const NavButton = ({children, onSelect}) => {
-
-    return (
-        <li className="nav-item" onClick={onSelect}>
-            {children}
-        </li>)
-}
+const NavButton = ({ children, path }) => {
+  return (
+    <Link to={path}>
+      <li className="nav-item">{children} </li>
+    </Link>
+  );
+};
 export default NavButton;

@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import "../css/BlogsPageStyle.css";
 import BlogCard from "../components/BlogCard";
 import TagList from "../components/TagsList";
+import Pagination from "../components/Pagination";
 import { getRequest } from "../api/apiAccessHelper";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
-const BlogsPage = ({ onEditBlog, onSelectTag, onSelectBlog }) => {
+const BlogsPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,140 +15,122 @@ const BlogsPage = ({ onEditBlog, onSelectTag, onSelectBlog }) => {
     totalPages: 0,
     totalItems: 0,
   });
-  const [tagNames, setTagNames] = useState("");
-  const [searchSize] = useState(10);
+  const [searchSize] = useState(5);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const buttons = document.querySelectorAll(".tags-list-button");
+  // Get the tag from URL query parameters
+  const tagParam = searchParams.get("tag");
 
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      buttons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-    });
-  });
-  const handleFetchBlogs = async (page = 0) => {
-    if (page < 0 || (page >= pageInfo.totalPages && blogs.length > 0)) return;
-
-    setLoading(true);
-    setError(null);
-
-    const data = await getRequest(`blog?page=${page}&size=${searchSize}`);
-
-    if (data) {
-      setBlogs(data.content || []);
-      setPageInfo({
-        currentPage: page,
-        totalPages: Math.ceil(data.totalCount / searchSize) || 0,
-        totalItems: data.totalCount || 0,
-      });
-
-      if (page !== 0) {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } else {
-      setError("Failed to fetch blogs. Please try again later.");
-    }
-
-    setLoading(false);
+  // Handle tag selection
+  const handleTagSelect = (tagName) => {
+    // Reset to page 0 when changing tags
+    navigate(`/blogs?tag=${tagName}`);
   };
-  const handleFetchBlogsByTag = async (page, tagName) => {
+
+  // Clear tag filter
+  const clearTagFilter = () => {
+    navigate("/blogs");
+  };
+
+  const fetchBlogs = async (page = 0) => {
     setLoading(true);
     setError(null);
-    if (tagNames == "") {
-      setPageInfo({ currentPage: 0, totalPages: 0, totalItems: 0 });
-      setTagNames([tagName]);
+    try {
+      let data;
+
+      if (tagParam) {
+        // Fetch blogs by tag
+        data = await getRequest(
+          `blog/tags?page=${page}&size=${searchSize}&tagNames=${tagParam}`
+        );
+      } else {
+        // Fetch all blogs
+        data = await getRequest(`blog?page=${page}&size=${searchSize}`);
+      }
+
+      if (data) {
+        setBlogs(data.content || []);
+        setPageInfo({
+          currentPage: page,
+          totalPages: Math.ceil(data.totalCount / searchSize) || 0,
+          totalItems: data.totalCount || 0,
+        });
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        setError("Failed to fetch blogs. Please try again later.");
+      }
+    } catch (err) {
+      setError("An error occurred while fetching blogs.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const data = await getRequest(
-      `blog/tags?page=${page}&size=${searchSize}&tagNames=${tagName}`
-    );
+  // Fetch blogs when page changes
+  const handlePageChange = (newPage) => {
+    if (newPage < 0 || (newPage >= pageInfo.totalPages && blogs.length > 0))
+      return;
 
-    if (data) {
-      setBlogs(data.content || []);
-      setPageInfo({
-        currentPage: page,
-        totalPages: Math.ceil(data.totalCount / searchSize) || 0,
-        totalItems: data.totalCount || 0,
-      });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      setError("Failed to fetch blogs. Please try again later.");
-    }
+    const url = new URL(window.location);
+    url.searchParams.set("page", newPage);
+    navigate(`${url.pathname}${url.search}`);
 
-    setLoading(false);
+    fetchBlogs(newPage);
   };
 
   useEffect(() => {
-    handleFetchBlogs(); // initial fetch
-  }, []);
-
-  if (loading && blogs.length === 0) return <div>Loading blogs...</div>;
-  if (error) return <div>{error}</div>;
+    // Get page from URL or default to 0
+    const page = parseInt(searchParams.get("page") || "0", 10);
+    fetchBlogs(page);
+  }, [tagParam, searchParams.get("page")]);
 
   return (
-    <div className="blogs-container">
-      <header>
-        <h1>Blogs</h1>
-      </header>
-      <div className="blogs-main">
-        <main>
-          {blogs.length === 0 ? (
-            <p>No blogs found</p>
-          ) : (
-            <div className="blog-list">
-              {blogs.map((blog) => (
-                <BlogCard
-                  key={blog.id}
-                  blogData={blog}
-                  onEditBlog={onEditBlog}
-                  onViewMore={onSelectBlog}
-                />
-              ))}
-            </div>
-          )}
+    <main>
+      <div className="blogs-container">
+        <header>
+          <h1>
+            Blogy{" "}
+            {tagParam && (
+              <span>
+                - Kategória: <strong>{tagParam}</strong>{" "}
+                <button onClick={clearTagFilter} className="clear-tag">
+                  ×
+                </button>
+              </span>
+            )}
+          </h1>
+        </header>
+        <div className="blogs-main">
+          <main>
+            {loading && blogs.length === 0 ? (
+              <div>Loading blogs...</div>
+            ) : error ? (
+              <div>{error}</div>
+            ) : blogs.length === 0 ? (
+              <p>No blogs found {tagParam && `for tag "${tagParam}"`}</p>
+            ) : (
+              <div className="blog-list">
+                {blogs.map((blog) => (
+                  <BlogCard key={blog.id} blogData={blog} />
+                ))}
+              </div>
+            )}
 
-          {loading && blogs.length > 0 && <div>Loading more...</div>}
-        </main>
-        <aside>
-          <nav className="sidebar">
-            {/* <h3>Search</h3>
-            <input type="text" placeholder="Search blogs..." /> */}
-            <hr />
-            <TagList onSelectTag={handleFetchBlogsByTag} />
-          </nav>
-        </aside>
-      </div>
+            {loading && blogs.length > 0 && <div>Loading more...</div>}
+          </main>
+        </div>
 
-      <div className="pagination">
-        <button
-          onClick={() => {
-            if (tagNames === "") {
-              handleFetchBlogs(pageInfo.currentPage - 1);
-            } else {
-              handleFetchBlogsByTag(pageInfo.currentPage - 1, tagNames);
-            }
-          }}
-          hidden={pageInfo.currentPage <= 0 || loading}
-        >
-          -
-        </button>
-        <span>
-          Page {pageInfo.currentPage + 1} of {pageInfo.totalPages}
-        </span>
-        <button
-          onClick={() => {
-            if (tagNames === "") {
-              handleFetchBlogs(pageInfo.currentPage + 1);
-            } else {
-              handleFetchBlogsByTag(pageInfo.currentPage + 1, tagNames);
-            }
-          }}
-          hidden={pageInfo.currentPage >= pageInfo.totalPages - 1 || loading}
-        >
-          +
-        </button>
+        <Pagination
+          currentPage={pageInfo.currentPage}
+          totalPages={pageInfo.totalPages}
+          loading={loading}
+          onPageChange={handlePageChange}
+        />
       </div>
-    </div>
+    </main>
   );
 };
 
