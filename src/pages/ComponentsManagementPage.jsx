@@ -83,22 +83,6 @@ const ComponentsManagementPage = ({ activeComponent }) => {
     setError((prev) => ({ ...prev, [componentName]: null }));
 
     try {
-      // Determine which HTTP method to use based on the component name
-      const putComponents = [
-        "footer",
-        "faqcomponent",
-        "otheractivities",
-        "logocomponent",
-        "afterschool",
-        "feitstory",
-        "slider",
-      ];
-      const usesPut = putComponents.includes(componentName);
-      console.log(
-        `Using ${
-          usesPut ? "PUT" : "POST"
-        } method for component: ${componentName}`
-      );
 
       let data;
 
@@ -125,9 +109,7 @@ const ComponentsManagementPage = ({ activeComponent }) => {
       } else {
         // Use the appropriate HTTP method based on the component name
         console.log(`Sending request to update ${componentName}`);
-        data = usesPut
-          ? await putRequest(`components/${componentName}`, componentData)
-          : await postRequest(`components/${componentName}`, componentData);
+        data = await postRequest(`components/${componentName}`, componentData);
       }
 
       // Update the component in state
