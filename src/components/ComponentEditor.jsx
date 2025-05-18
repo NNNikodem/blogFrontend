@@ -111,7 +111,7 @@ const ComponentEditor = ({
                     {typeof item === "object" && item !== null ? (
                       <div className="nested-object">
                         {Object.entries(item).map(([itemKey, itemValue]) =>
-                          renderFormField(itemKey, itemValue, itemPath)
+                          (itemKey === "id") ? null : renderFormField(itemKey, itemValue, itemPath)
                         )}
                       </div>
                     ) : (
@@ -185,7 +185,8 @@ const ComponentEditor = ({
           {isExpanded(currentPath) && (
             <div className="nested-content">
               {Object.entries(value).map(([objKey, objValue]) =>
-                renderFormField(objKey, objValue, currentPath)
+                // Skip rendering the id field for all components
+                (objKey === "id") ? null : renderFormField(objKey, objValue, currentPath)
               )}
             </div>
           )}
@@ -301,7 +302,9 @@ const ComponentEditor = ({
       )}
 
       <div className="component-form">
-        {Object.entries(editedComponent).map(([key, value]) =>
+        {Object.entries(editedComponent)
+            // .filter(([key]) => key !== "id")
+            .map(([key, value]) =>
           renderFormField(key, value)
         )}
 
