@@ -48,6 +48,7 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
       ? { ...(options.headers || {}) } // Don't set Content-Type for FormData, browser will set it with boundary
       : {
           "Content-Type": "application/json",
+          // priklad ako na to :D // "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
           ...(options.headers || {}),
         };
 
@@ -84,6 +85,7 @@ export const putRequest = async (endpoint, body) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        // priklad ako na to :D // "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
         // Add authorization headers if needed
         // 'Authorization': `Bearer ${getToken()}`
       },
