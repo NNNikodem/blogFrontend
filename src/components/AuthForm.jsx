@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { postRequest } from "../api/apiAccessHelper";
+import { postRequest, getError, isLoading } from "../api/apiAccessHelper";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../css/Components/AuthForm.css";
 
 const AuthForm = ({ isLogin, toggleForm }) => {
@@ -13,6 +14,7 @@ const AuthForm = ({ isLogin, toggleForm }) => {
     password: "",
     confirmPassword: "",
   });
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -40,7 +42,7 @@ const AuthForm = ({ isLogin, toggleForm }) => {
 
         if (response && response.accessToken) {
           setSuccess("Prihlásenie úspešné.");
-          localStorage.setItem("accessToken", response.accessToken);
+          login(response.accessToken);
           // Redirect to home or dashboard
           setTimeout(() => {
             navigate("/auth/feitcity/account");
@@ -64,12 +66,20 @@ const AuthForm = ({ isLogin, toggleForm }) => {
 
         const response = await postRequest("authenticate/signup", registerData);
 
-        if (response && response.accessToken) {
+        if (response.ok) {
           setSuccess("Registrácia úspešná. Môžete sa prihlásiť.");
-          // Redirect to home or dashboard
+          setTimeout(() => {
+            setSuccess("");
+          }, 2000); // Clear success message after 2 seconds
           toggleForm();
+          setFormData({
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
         } else {
-          setError("Registrácia zlyhala. Skúste to znova.");
+          setError(getError || "Registrácia zlyhala. Skúste to znova.");
         }
       }
     } catch (err) {

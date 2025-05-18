@@ -20,6 +20,8 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import TagList from "./components/TagsList.jsx";
 import ComponentSidebar from "./components/ComponentSidebar.jsx";
 
+import ProtectedRoute from "./pages/ProtectedRoute/ProtectedRoute.jsx";
+
 function AppLayout() {
   const location = useLocation();
   const [tagsOpen, setTagsOpen] = useState(false);
@@ -37,18 +39,18 @@ function AppLayout() {
   // Component titles for display in sidebar
   const componentsList = [
     { id: "footer", title: "Footer" },
-    { id: "faqcomponent", title: "FAQ Component" },
-    { id: "otheractivities", title: "Other Activities" },
-    { id: "logocomponent", title: "Logo Component" },
-    { id: "afterschool", title: "After School" },
+    { id: "faqcomponent", title: "FAQ" },
+    { id: "otheractivities", title: "Ostatné Aktivity" },
+    { id: "logocomponent", title: "Logo Komponent" },
+    { id: "afterschool", title: "Po Škole" },
     { id: "feitstory", title: "FEIT Story" },
-    { id: "slider", title: "Slider" },
-    { id: "featureboxs", title: "Feature Boxes" },
-    { id: "dod", title: "DOD Component" },
-    { id: "whyfeit", title: "Why FEIT" },
-    { id: "countdown", title: "Countdown" },
+    { id: "slider", title: "Slider - Život na FEIT" },
+    { id: "featureboxs", title: "Boxy Bc. Programov" },
+    { id: "dod", title: "DOD Komponent" },
+    { id: "whyfeit", title: "Prečo FEIT" },
+    { id: "countdown", title: "Časovač" },
     { id: "video", title: "Video" },
-    { id: "menu", title: "Menu" },
+    { id: "menu", title: "Header Menu" },
   ];
 
   return (
@@ -64,20 +66,27 @@ function AppLayout() {
           <Routes>
             <Route path="/" element={<BlogsPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
-            <Route path="/create" element={<BlogCreatePage />} />
             <Route
               path="/auth/feitcity/account/login"
               element={<LoginPage />}
             />
-            <Route path="/edit/:blogId" element={<BlogEditPage />} />
             <Route path="/blog/:blogId" element={<BlogDetailPage />} />
-            <Route
-              path="/components"
-              element={
-                <ComponentsManagementPage activeComponent={activeComponent} />
-              }
-            />
-            <Route path="/headerTry" element={<HeaderTry />} />
+
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/create" element={<BlogCreatePage />} />
+              <Route path="/edit/:blogId" element={<BlogEditPage />} />
+              <Route
+                path="/components"
+                element={
+                  <ComponentsManagementPage
+                    componentList={componentsList}
+                    activeComponent={activeComponent}
+                  />
+                }
+              />
+            </Route>
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>

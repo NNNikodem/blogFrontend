@@ -20,7 +20,6 @@ export const getRequest = async (endpoint, options = {}) => {
     });
 
     const data = await response.json();
-    console.log("Response data:", data);
     if (!response.ok) {
       throw new Error(data.message || "Something went wrong");
     }
@@ -38,7 +37,7 @@ export const getRequest = async (endpoint, options = {}) => {
 export const postRequest = async (endpoint, body = {}, options = {}) => {
   loading = true;
   error = null;
-  console.log(`Sending POST request to: ${BASE_URL}${endpoint}`);
+  let response = null;
   try {
     // Check if we're dealing with FormData (for multipart/form-data requests)
     const isFormData = body instanceof FormData;
@@ -48,18 +47,25 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
       ? { ...(options.headers || {}) } // Don't set Content-Type for FormData, browser will set it with boundary
       : {
           "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
           ...(options.headers || {}),
         };
 
-    const response = await fetch(`${BASE_URL}${endpoint}`, {
+    response = await fetch(`${BASE_URL}${endpoint}`, {
       method: "POST",
       headers,
       body: isFormData ? body : JSON.stringify(body),
       ...options,
     });
-
-    const data = await response.json();
+    console.log("Response status:", response);
+    let data = response;
+    try {
+      data = await response.json();
+    } catch (e) {
+      console.log("Response is not JSON, returning raw response:", response);
+      return response;
+    }
     if (!response.ok) {
       throw new Error(data.message || "Something went wrong");
     }
@@ -68,7 +74,7 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
   } catch (err) {
     error = err.message;
     console.error("POST request error:", err);
-    return null;
+    return response;
   } finally {
     loading = false;
   }
@@ -77,22 +83,20 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
 // Example modification for putRequest in apiAccessHelper.js
 export const putRequest = async (endpoint, body) => {
   const url = `${BASE_URL}${endpoint}`;
-  console.log(`Sending PUT request to: ${url}`);
-  console.log("Request body:", body);
+  console.log("Sending body:", body);
 
   try {
     const response = await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
         // Add authorization headers if needed
         // 'Authorization': `Bearer ${getToken()}`
       },
       body: JSON.stringify(body),
     });
-
-    console.log(`PUT request to ${url} status: ${response.status}`);
 
     if (!response.ok) {
       // Try to get error details from the response body
@@ -133,21 +137,20 @@ export const putRequest = async (endpoint, body) => {
 
     // If there is content and it's JSON, parse it
     if (contentType && contentType.includes("application/json")) {
-      const data = await response.json(); // This is line 92 where the original error likely occurred
-      console.log(`PUT request to ${url} successful. Response data:`, data);
+      const data = await response.json();
+      //console.log(`PUT request to ${url} successful. Response data:`, data);
       return data;
     } else {
-      // Handle non-JSON responses if necessary
+      // Handle non-JSON responses
       const textData = await response.text();
-      console.log(
-        `PUT request to ${url} successful. Response text data:`,
-        textData
-      );
+      // console.log(
+      //   `PUT request to ${url} successful. Response text data:`,
+      //   textData
+      // );
       return textData;
     }
   } catch (error) {
-    console.error(`PUT request error for ${url}:`, error); // Log the specific error
-    // Re-throw the error to be caught by the calling function (updateComponent)
+    console.error(`PUT request error for ${url}:`, error);
     throw error;
   }
 };

@@ -69,7 +69,6 @@
 .content-container {
   display: flex;
   flex: 1;
-  margin-top: 95px; /* Match header height */
   position: relative;
 }
 .with-tags-sidebar .main-content {

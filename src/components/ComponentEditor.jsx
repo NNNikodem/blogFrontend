@@ -13,7 +13,48 @@ const ComponentEditor = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
+  const keyTranslations = {
+    title: "Názov",
+    description: "Popis",
+    imageUrl: "URL obrázka",
+    imageUrl1: "URL obrázka 2",
+    imageUrl2: "URL obrázka 3",
+    imageUrl3: "URL obrázka 4",
+    text: "Text",
+    label: "Označenie",
+    applicationsText: "Text aplikácií",
+    videoUrl: "URL videa",
+    menuItems: "Položky menu",
+    dropdownMenuItems: "Položky rozbaľovacieho menu",
+    button: "Tlačidlo",
+    items: "Položky",
+    visible: "Viditeľné",
+    url: "URL odkaz",
+    alt: "Alternatíva",
+    //whyfeit
+    whyFeitLists: "Zoznam prečo FEIT",
+    countPrograms: "Počet",
+    countDescription: "Popis pre daný počet",
+    annualStipend: "Ročné štipendium",
+    salary: "Nástupný plat",
+    application: "Uplatnenie [%]",
+    // footer
+    locationColumn: "Adresa",
+    contactColumn: "Kontakty",
+    socialColumn: "Sociálne siete",
+    shopColumn: "Obchod",
+    navigationColumn: "Navigácia na stránke",
+    //feitstory
+    videoItemList: "Zoznam videí",
+    //slider - zivot na FEIT
+    iconsStyle: "Štýl ikoniek",
+    //dod
+    buttonText: "Text tlačidla",
+    buttonLink: "URL Odkaz tlačidla",
+    //countdown
+    endDate: `Dátum "do"`,
+    applicationText: "Text pre dátum",
+  };
   useEffect(() => {
     setEditedComponent(component);
   }, [component]);
@@ -56,15 +97,33 @@ const ComponentEditor = ({
     return expandedSections[pathKey];
   };
 
+  // Helper function to get translated field name
+  const getTranslatedLabel = (key) => {
+    // Check if we have a direct translation
+    if (keyTranslations[key]) {
+      return keyTranslations[key];
+    }
+
+    // Handle keys that might contain numbers (like imageUrl3)
+    const baseKey = key.replace(/\d+$/, "");
+    if (keyTranslations[baseKey]) {
+      const number = key.match(/\d+$/)?.[0];
+      return `${keyTranslations[baseKey]}${number ? " " + number : ""}`;
+    }
+
+    // Default to the original key if no translation found
+    return key;
+  };
+
   // Recursive function to render form fields for nested objects and arrays
   const renderFormField = (key, value, path = []) => {
     const currentPath = [...path, key];
-
+    if (key === "id") return null; // Skip rendering the id field for all components
     // Handle null values
     if (value === null) {
       return (
         <div key={currentPath.join(".")} className="form-group">
-          <label>{key}</label>
+          <label>{getTranslatedLabel(key)}</label>
           <input
             type="text"
             value=""
@@ -92,7 +151,7 @@ const ComponentEditor = ({
             onClick={() => toggleExpand(currentPath)}
           >
             <label>
-              {key} (Array - {value.length} items)
+              {getTranslatedLabel(key)} (Počet - {value.length})
             </label>
             <span className="expand-icon">
               {isExpanded(currentPath) ? "▼" : "►"}
@@ -106,12 +165,14 @@ const ComponentEditor = ({
                 return (
                   <div key={itemPath.join(".")} className="array-item">
                     <div className="array-item-header">
-                      <span>Item {index + 1}</span>
+                      <span>Položka {index + 1}</span>
                     </div>
                     {typeof item === "object" && item !== null ? (
                       <div className="nested-object">
                         {Object.entries(item).map(([itemKey, itemValue]) =>
-                          (itemKey === "id") ? null : renderFormField(itemKey, itemValue, itemPath)
+                          itemKey === "id"
+                            ? null
+                            : renderFormField(itemKey, itemValue, itemPath)
                         )}
                       </div>
                     ) : (
@@ -138,7 +199,7 @@ const ComponentEditor = ({
 
               {(isMenuItemsPath || isDropdownSubItemsPath) && (
                 <button
-                  className="add-button"
+                  className="components-add-button"
                   onClick={() => {
                     const updatedComponent = JSON.parse(
                       JSON.stringify(editedComponent)
@@ -159,7 +220,8 @@ const ComponentEditor = ({
                   }}
                   style={{ marginTop: "10px" }}
                 >
-                  + Add {isMenuItemsPath ? "Menu Item" : "Dropdown Subitem"}
+                  + Pridaj{" "}
+                  {isMenuItemsPath ? "Menu Položku" : "Dropdown Položku"}
                 </button>
               )}
             </div>
@@ -176,7 +238,7 @@ const ComponentEditor = ({
             className="nested-header"
             onClick={() => toggleExpand(currentPath)}
           >
-            <label>{key} (Object)</label>
+            <label>{getTranslatedLabel(key)} (Objekt)</label>
             <span className="expand-icon">
               {isExpanded(currentPath) ? "▼" : "►"}
             </span>
@@ -186,7 +248,9 @@ const ComponentEditor = ({
             <div className="nested-content">
               {Object.entries(value).map(([objKey, objValue]) =>
                 // Skip rendering the id field for all components
-                (objKey === "id") ? null : renderFormField(objKey, objValue, currentPath)
+                objKey === "id"
+                  ? null
+                  : renderFormField(objKey, objValue, currentPath)
               )}
             </div>
           )}
@@ -198,7 +262,7 @@ const ComponentEditor = ({
     if (value instanceof Date) {
       return (
         <div key={currentPath.join(".")} className="form-group">
-          <label>{key}</label>
+          <label>{getTranslatedLabel(key)}</label>
           <input
             type="date"
             value={value.toISOString().split("T")[0]}
@@ -208,7 +272,7 @@ const ComponentEditor = ({
       );
     }
 
-    // Handle boolean values
+    // Handle boolean values (visible, etc)
     if (typeof value === "boolean") {
       return (
         <div key={currentPath.join(".")} className="form-group checkbox-group">
@@ -229,7 +293,9 @@ const ComponentEditor = ({
                 setEditedComponent(updatedComponent);
               }}
             />
-            {key}
+            {key === "visible"
+              ? "zobraziť na stránke"
+              : getTranslatedLabel(key)}
           </label>
         </div>
       );
@@ -239,7 +305,7 @@ const ComponentEditor = ({
     if (typeof value === "number") {
       return (
         <div key={currentPath.join(".")} className="form-group">
-          <label>{key}</label>
+          <label>{getTranslatedLabel(key)}</label>
           <input
             type="number"
             value={value}
@@ -264,7 +330,7 @@ const ComponentEditor = ({
     // Default: handle as string
     return (
       <div key={currentPath.join(".")} className="form-group">
-        <label>{key}</label>
+        <label>{getTranslatedLabel(key)}</label>
         <input
           type="text"
           value={value || ""}
@@ -295,21 +361,17 @@ const ComponentEditor = ({
   return (
     <div className="component-editor">
       <h2>{title}</h2>
-      {loading && <div className="loading">Loading...</div>}
+      {loading && <div className="loading">Načítavam...</div>}
       {error && <div className="error">{error}</div>}
-      {success && (
-        <div className="success">Component updated successfully!</div>
-      )}
+      {success && <div className="success">Komponent úspešne zmenený!</div>}
 
       <div className="component-form">
         {Object.entries(editedComponent)
-            // .filter(([key]) => key !== "id")
-            .map(([key, value]) =>
-          renderFormField(key, value)
-        )}
+          // .filter(([key]) => key !== "id")
+          .map(([key, value]) => renderFormField(key, value))}
 
         <button className="save-button" onClick={handleSave} disabled={loading}>
-          {loading ? "Saving..." : "Save"}
+          {loading ? "Ukladám..." : "Uložiť"}
         </button>
       </div>
     </div>
