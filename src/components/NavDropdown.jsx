@@ -1,8 +1,65 @@
 import React, { useState } from "react";
+import NavDropdownItem from "./NavDropdownItem";
 
-const NavDropdown = ({ children }) => {
+const NavDropdown = ({ children, isMobile }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const basePageUrl = "https://feitcity.sk/";
+
+  // Create dropdown items list for reuse
+  const dropdownItems = (
+    <>
+      <NavDropdownItem navPath={`${basePageUrl}#zivot`}>
+        Študentský život
+      </NavDropdownItem>
+      <NavDropdownItem navPath={`${basePageUrl}#poskole`}>
+        Kam po škole?
+      </NavDropdownItem>
+      <NavDropdownItem
+        navPath={`${basePageUrl}specialne-cvicenia/`}
+        target="_blank"
+      >
+        Špeciálne cvičenia
+      </NavDropdownItem>
+      <NavDropdownItem navPath={`${basePageUrl}#feitstory`}>
+        FEITstory
+      </NavDropdownItem>
+      <NavDropdownItem navPath={`https://feit.uniza.sk/tmr/`} target="_blank">
+        Technická myšlienka roka
+      </NavDropdownItem>
+      <NavDropdownItem navPath={`${basePageUrl}blog/`} target="_blank">
+        Blog
+      </NavDropdownItem>
+      <NavDropdownItem navPath={`${basePageUrl}#kontakty`}>
+        Kontakt
+      </NavDropdownItem>
+    </>
+  );
+
+  // Mobile view - show toggle to expand/collapse
+  if (isMobile) {
+    return (
+      <>
+        <li
+          className="nav-item dropdown mobile-dropdown"
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+        >
+          <span className="dropdown-toggle mobile-toggle">
+            {children}
+            <span
+              className={`mobile-toggle-icon ${dropdownOpen ? "open" : ""}`}
+            >
+              ▼
+            </span>
+          </span>
+        </li>
+        <div className={`mobile-dropdown-items ${dropdownOpen ? "open" : ""}`}>
+          {dropdownItems}
+        </div>
+      </>
+    );
+  }
+
+  // Desktop view - show on hover
   return (
     <li
       className="nav-item dropdown"
@@ -11,35 +68,10 @@ const NavDropdown = ({ children }) => {
     >
       <span className="dropdown-toggle">{children}</span>
       <ul className={`dropdown-menu ${dropdownOpen ? "show" : ""}`}>
-        <li className="dropdown-menu-item arrow">
-          <a href={`${basePageUrl}#zivot`}>Študentský život</a>
-        </li>
-        <li className="dropdown-menu-item">
-          <a href={`${basePageUrl}#poskole`}>Kam po škole?</a>
-        </li>
-        <li className="dropdown-menu-item">
-          <a href={`${basePageUrl}specialne-cvicenia/`} target="_blank">
-            Špeciálne cvičenia
-          </a>
-        </li>
-        <li className="dropdown-menu-item">
-          <a href={`${basePageUrl}#feitstory`}>FEITstory</a>
-        </li>
-        <li className="dropdown-menu-item">
-          <a href="https://feit.uniza.sk/tmr/" target="_blank">
-            Technická myšlienka roka
-          </a>
-        </li>
-        <li className="dropdown-menu-item">
-          <a href={`${basePageUrl}blog/`} target="_blank">
-            Blog
-          </a>
-        </li>
-        <li className="dropdown-menu-item">
-          <a href={`${basePageUrl}#kontakty`}>Kontakt</a>
-        </li>
+        {dropdownItems}
       </ul>
     </li>
   );
 };
+
 export default NavDropdown;

@@ -37,6 +37,26 @@
   padding: 2%;
   color: gray;
 }
+.blog-tag::before {
+  content: "#";
+}
+.blog-tag {
+  background-color: rgba(var(--orange-color), 0.4);
+  color: white;
+  border-radius: 16px;
+  padding: 3px 10px;
+  margin-right: 5px;
+  transition: all 0.2s ease-in-out;
+}
+.blog-tag:hover {
+  cursor: pointer;
+  background-color: rgba(var(--orange-color), 0.7);
+  text-decoration: underline;
+}
+.blog-tag-placeholder {
+  color: rgb(179, 179, 179);
+  font-size: small;
+}
 .blog-content {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -73,8 +93,40 @@
   cursor: pointer;
   font-size: 14px;
   display: inline-block;
+  transition: all 0.2s ease-in-out;
 }
 .blog-card-edit-button:hover,
 .blog-card-view-button:hover {
   background-color: rgba(var(--orange-color), 0.8);
+}
+/* Add to your BlogCard.css file */
+.blog-icon {
+  margin-right: 6px;
+  margin-left: 10px;
+}
+
+.blog-icon:first-child {
+  margin-left: 0;
+}
+
+.blog-published {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.blog-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.blog-card-view-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
 }

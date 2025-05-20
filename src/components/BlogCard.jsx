@@ -2,8 +2,15 @@ import React from "react";
 import "../css/BlogsPageStyle.css";
 import { useNavigate } from "react-router-dom";
 import "../css/Components/BlogCard.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarAlt,
+  faUser,
+  faTags,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 
-const BlogCard = ({ blogData, onEditBlog, onViewMore }) => {
+const BlogCard = ({ blogData, onEditBlog, onViewMore, onClickTag }) => {
   const { title, content, tags, createdAt, author, mainImageUrl, id } =
     blogData;
   const navigate = useNavigate();
@@ -11,7 +18,7 @@ const BlogCard = ({ blogData, onEditBlog, onViewMore }) => {
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleDateString("sk-SK", {
         day: "2-digit",
-        month: "2-digit",
+        month: "long",
         year: "numeric",
       })
     : "Date unavailable";
@@ -46,7 +53,10 @@ const BlogCard = ({ blogData, onEditBlog, onViewMore }) => {
         {title}
       </h2>
       <p className="blog-published">
-        {author || "Unknown"}, {formattedDate}
+        <FontAwesomeIcon icon={faUser} className="blog-icon" />{" "}
+        {author || "Unknown"},
+        <FontAwesomeIcon icon={faCalendarAlt} className="blog-icon" />{" "}
+        {formattedDate}
       </p>
 
       <div
@@ -54,33 +64,29 @@ const BlogCard = ({ blogData, onEditBlog, onViewMore }) => {
         dangerouslySetInnerHTML={{ __html: content }}
       ></div>
       <div className="blog-tags">
+        <FontAwesomeIcon icon={faTags} className="blog-icon" />
         {tags.length > 0 ? (
           tags.map((tag, index) => (
-            <span key={index} className="blog-tag">
+            <span
+              key={index}
+              className="blog-tag"
+              onClick={() => onClickTag(tag.name)}
+            >
               {tag.name}
-              {index !== tags.length - 1 ? ", " : ""}
             </span>
           ))
         ) : (
-          <span className="blog-tag blog-tag-placeholder">No tags</span>
+          <span className="blog-tag-placeholder">žiadne kategórie</span>
         )}
       </div>
       <div className="blog-card-buttons-container">
-        {/* <button
-          className="blog-card-edit-button"
-          onClick={() => {
-            handleClick("edit");
-          }}
-        >
-          Upraviť
-        </button> */}
         <button
           className="blog-card-view-button"
           onClick={() => {
             handleClick("blog");
           }}
         >
-          Zobraziť
+          <FontAwesomeIcon icon={faEye} /> Zobraziť
         </button>
       </div>
       <hr />

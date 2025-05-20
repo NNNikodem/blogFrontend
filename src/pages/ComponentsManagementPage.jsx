@@ -44,7 +44,6 @@ const ComponentsManagementPage = ({ activeComponent, componentList }) => {
     try {
       const data = await getRequest(`components/${componentName}`);
       if (data) {
-        console.log(`Component ${componentName} fetched successfully`, data);
         setComponents((prev) => ({ ...prev, [componentName]: data }));
       }
       return data;

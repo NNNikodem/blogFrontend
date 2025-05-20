@@ -96,7 +96,8 @@
   height: calc(100vh - 95px);
   background-color: rgba(23, 22, 26, 1);
   border-left: 1px solid #e0e0e0;
-  overflow-y: auto;
+  overflow-y: hidden; /* Let child container handle scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
   transition: all 0.3s ease;
   z-index: 100;
 }
@@ -181,7 +182,8 @@
   top: 105px;
 }
 
-.tags-sidebar-toggle {
+.tags-sidebar-toggle,
+.component-sidebar-toggle {
   right: 10px;
   top: 105px;
 }

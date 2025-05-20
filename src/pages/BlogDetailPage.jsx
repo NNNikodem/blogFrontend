@@ -3,10 +3,21 @@ import { getRequest, isLoading, getError } from "../api/apiAccessHelper";
 import "../css/BlogDetailPageStyle.css";
 import TagList from "../components/TagsList";
 import { useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendarAlt,
+  faUser,
+  faTags,
+  faArrowLeft,
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+
 const BlogDetailPage = () => {
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   let formattedDate = "";
   //const navigate = useNavigate();
   const { blogId } = useParams();
@@ -41,8 +52,7 @@ const BlogDetailPage = () => {
   }, []);
 
   const handleBackClick = () => {
-    //navigate(-1); // Navigate back to the previous page
-    console.log("Back button clicked");
+    navigate(-1); // Navigate back to the previous page
   };
   const handleFetchBlogsByTag = async (tagName = "") => {
     setLoading(true);
@@ -78,7 +88,7 @@ const BlogDetailPage = () => {
       <div className="blog-detail-container">
         <p className="error-message">{error}</p>
         <button className="back-button" onClick={handleBackClick}>
-          Back
+          <FontAwesomeIcon icon={faArrowLeft} /> Späť
         </button>
       </div>
     );
@@ -87,9 +97,9 @@ const BlogDetailPage = () => {
   if (!blog) {
     return (
       <div className="blog-detail-container">
-        <p>No blog found</p>
+        <p>Blog nebol nájdený.</p>
         <button className="back-button" onClick={handleBackClick}>
-          Back
+          <FontAwesomeIcon icon={faArrowLeft} /> Späť
         </button>
       </div>
     );
@@ -100,11 +110,34 @@ const BlogDetailPage = () => {
       <div className="blog-detail-container">
         <div className="blog-detail-image-container">
           <img src={blog.mainImageUrl} alt="" />
-          <span>{formattedDate}</span>
+          <span>
+            <FontAwesomeIcon icon={faCalendarAlt} /> {formattedDate}
+          </span>
         </div>
         <h1 className="blog-detail-title">{blog.title}</h1>
+        <div className="blog-detail-tags">
+          <FontAwesomeIcon icon={faTags} className="tag-icon" />
+          {blog.tags && blog.tags.length > 0 ? (
+            blog.tags.map((tag, index) => (
+              <span className="blog-detail-tag" key={index}>
+                {tag.name}
+              </span>
+            ))
+          ) : (
+            <span className="blog-detail-tag-placeholder">
+              žiadne kategórie
+            </span>
+          )}
+        </div>
         <div className="blog-detail-meta">
-          <span className="blog-detail-published">By: {blog.author}</span>
+          <span className="blog-detail-published">
+            <FontAwesomeIcon icon={faUser} /> Autor: {blog.author}
+          </span>
+          {blog.readingTime && (
+            <span className="blog-detail-reading-time">
+              <FontAwesomeIcon icon={faClock} /> {blog.readingTime} min read
+            </span>
+          )}
         </div>
         <div
           className="blog-detail-content"

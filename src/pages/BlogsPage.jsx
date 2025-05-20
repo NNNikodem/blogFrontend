@@ -114,7 +114,11 @@ const BlogsPage = () => {
             ) : (
               <div className="blog-list">
                 {blogs.map((blog) => (
-                  <BlogCard key={blog.id} blogData={blog} />
+                  <BlogCard
+                    key={blog.id}
+                    blogData={blog}
+                    onClickTag={handleTagSelect}
+                  />
                 ))}
               </div>
             )}

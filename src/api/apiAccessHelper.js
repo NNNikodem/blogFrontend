@@ -5,6 +5,25 @@ let error = null;
 
 const BASE_URL = "http://localhost:8080/api/v1/";
 
+/**
+ * Gets authentication headers if user is logged in
+ * @returns {Object} Headers object containing authorization token if available
+ */
+export const getAuthHeaders = () => {
+  try {
+    const authData = JSON.parse(localStorage.getItem("accessToken"));
+    if (authData && authData.token) {
+      return {
+        Authorization: `Bearer ${authData.token}`,
+      };
+    }
+  } catch (error) {
+    console.error("Error getting auth headers:", error);
+  }
+  return {};
+};
+
+// Update getRequest to use auth headers
 export const getRequest = async (endpoint, options = {}) => {
   loading = true;
   error = null;
@@ -14,6 +33,7 @@ export const getRequest = async (endpoint, options = {}) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        ...getAuthHeaders(),
         ...(options.headers || {}),
       },
       ...options,
@@ -44,11 +64,13 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
 
     // Set up headers based on content type
     const headers = isFormData
-      ? { ...(options.headers || {}) } // Don't set Content-Type for FormData, browser will set it with boundary
+      ? {
+          ...getAuthHeaders(),
+          ...(options.headers || {}),
+        } // Don't set Content-Type for FormData, browser will set it with boundary
       : {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
+          ...getAuthHeaders(),
           ...(options.headers || {}),
         };
 
@@ -80,7 +102,6 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
   }
 };
 
-// Example modification for putRequest in apiAccessHelper.js
 export const putRequest = async (endpoint, body) => {
   const url = `${BASE_URL}${endpoint}`;
   console.log("Sending body:", body);
@@ -90,10 +111,7 @@ export const putRequest = async (endpoint, body) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN3dEB0ZXN0LmNvbSIsImVtYWlsIjoidGVzd3RAdGVzdC5jb20iLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9MRV9VU0VSIn1dLCJpYXQiOjE3NDc1NjkyOTUsImV4cCI6MTc0NzU3NzkzNX0.SOCwYkF03IvtWbcB-AQRojrOsZdGYLV-Z-qbpLQd0n8MVaMYlCiCsjUTvBvIXBwl",
-        // Add authorization headers if needed
-        // 'Authorization': `Bearer ${getToken()}`
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(body),
     });

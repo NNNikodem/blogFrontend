@@ -45,7 +45,8 @@ const AuthForm = ({ isLogin, toggleForm }) => {
           login(response.accessToken);
           // Redirect to home or dashboard
           setTimeout(() => {
-            navigate("/auth/feitcity/account");
+            setSuccess("");
+            navigate("/blogs");
           }, 1000); // Redirect after 1 seconds
         } else {
           setError("Prihlásenie zlyhalo. Skúste to znova.");

@@ -1,18 +1,14 @@
 .tags-container {
-  position: fixed;
-  right: 0;
-  top: 95px;
-  width: 250px;
-  height: calc(100vh - 95px);
-  background-color: rgba(23, 22, 26, 1);
-  border-left: 1px solid #e0e0e0;
+  position: relative; /* Change from fixed to relative */
+  width: 100%; /* Take full width of parent */
+  height: 100%;
+  background-color: transparent; /* Remove background as parent has it */
   overflow-y: auto;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
   transition: all 0.3s ease;
-  z-index: 100;
   font-family: var(--alt-font);
   padding: 20px;
 }
-
 .tags-container h3 {
   margin-top: 0;
   padding-bottom: 10px;
@@ -25,10 +21,12 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  width: 100%; /* Ensure list takes full width */
 }
 
 .tags-list li {
   margin-bottom: 8px;
+  width: 100%; /* Full width list items */
 }
 
 .tags-list-button {
@@ -57,40 +55,16 @@
   color: white;
 }
 
-/* Tags sidebar toggle */
-.tags-sidebar-toggle {
-  display: none;
-  position: fixed;
-  right: 10px;
-  top: 105px;
-  z-index: 101;
-  background-color: rgba(217, 46, 10, 0.9);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
 /* Responsive styles */
 @media screen and (max-width: 768px) {
   .tags-container {
-    width: 80%;
-    max-width: 300px;
-    transform: translateX(100%);
+    width: 100%;
+    max-width: none; /* Let parent define width */
+    transform: none; /* Remove transform */
   }
 
   .tags-container.open {
-    transform: translateX(0);
-  }
-
-  /* Show toggle button */
-  .tags-sidebar-toggle {
-    display: flex;
+    transform: none; /* Remove transform */
   }
 }
 
