@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TagButton from "./TagButton";
-import "../css/Components/TagsList.css";
+import "../../css/Components/TagsList.css";
 
 const TagList = ({ activeTag, onSelectTag }) => {
   const [tags, setTags] = useState([]);

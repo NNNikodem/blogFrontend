@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getRequest, isLoading, getError } from "../api/apiAccessHelper";
 import "../css/BlogDetailPageStyle.css";
-import TagList from "../components/TagsList";
+import TagList from "../components/Sidebar/TagsList";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {

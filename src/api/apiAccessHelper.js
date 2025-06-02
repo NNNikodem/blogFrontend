@@ -43,7 +43,7 @@ export const getRequest = async (endpoint, options = {}) => {
     if (!response.ok) {
       throw new Error(data.message || "Something went wrong");
     }
-
+    loading = false;
     return data;
   } catch (err) {
     error = err.message;

@@ -1,6 +1,17 @@
 :root {
   --bg-color: rgba(23, 22, 26, 1);
+  --footer-bg-color: #121418;
   --orange-color: 217, 46, 10;
+  --text-primary-color: rgb(255, 255, 255);
+  --text-secondary-color: rgb(126, 126, 126);
+
   background-color: var(--bg-color);
   color: white;
+}
+
+.image-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }

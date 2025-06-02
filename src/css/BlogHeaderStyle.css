@@ -87,7 +87,7 @@
 .nav-item:hover {
   color: rgba(255, 255, 255, 0.5);
 }
-.blog-header button {
+.blog-header-button {
   font-family: var(--alt-font);
   font-weight: 500;
   font-size: 0.9rem;
@@ -103,7 +103,7 @@
   box-shadow: none;
   transition: all 0.3s ease-in-out 0s;
 }
-.blog-header button:hover {
+.blog-header-button:hover {
   color: rgba(255, 255, 255, 0.5);
   background-color: rgba(255, 255, 255, 1);
   color: black;
@@ -363,7 +363,7 @@
     background-color: white;
     height: 79px;
   }
-  .blog-header button {
+  .blog-header-button {
     color: black;
     border-color: black;
     padding: 14px 27px;
@@ -372,7 +372,7 @@
     font-weight: 400;
     font-size: 0.85rem;
   }
-  .blog-header button:hover {
+  .blog-header-button:hover {
     background-color: black;
     color: white;
   }
@@ -390,7 +390,7 @@
   }
 
   /* Ensure button stays visible */
-  .blog-header button {
+  .blog-header-button {
     z-index: 1002; /* Above mobile menu */
   }
 

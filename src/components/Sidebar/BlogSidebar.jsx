@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import "../css/SidebarStyle.css";
+import "../../css/SidebarStyle.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faNewspaper,
@@ -8,19 +8,27 @@ import {
   faPuzzlePiece,
   faBars,
   faTimes,
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import BlogSidebarItem from "./BlogSidebarItem";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
+import BlogSidebarFooter from "./BlogSidebarFooter";
 
 const BlogSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { loading, isAuthenticated, isAdmin } = useAuth();
+  const { loading, isAuthenticated, isAdmin, logout } = useAuth();
 
   // Function to close sidebar - will be passed to sidebar items
   const closeSidebar = () => {
     if (window.innerWidth <= 768) {
       setIsOpen(false);
     }
+  };
+
+  // Handle logout button click
+  const handleLogout = () => {
+    logout();
+    closeSidebar();
   };
 
   // Close sidebar when clicking outside on mobile
@@ -82,24 +90,26 @@ const BlogSidebar = () => {
             Blogy
           </BlogSidebarItem>
           {isAuthenticated && (
-            <BlogSidebarItem
-              navPath={"/create"}
-              faIcon={faPlus}
-              onClick={closeSidebar}
-            >
-              Vytvoriť Blog
-            </BlogSidebarItem>
-          )}
-          {isAdmin && (
-            <BlogSidebarItem
-              navPath={"/components"}
-              faIcon={faPuzzlePiece}
-              onClick={closeSidebar}
-            >
-              Komponenty
-            </BlogSidebarItem>
+            <>
+              <BlogSidebarItem
+                navPath={"/create"}
+                faIcon={faPlus}
+                onClick={closeSidebar}
+              >
+                Vytvoriť Blog
+              </BlogSidebarItem>
+              <BlogSidebarItem
+                navPath={"/components"}
+                faIcon={faPuzzlePiece}
+                onClick={closeSidebar}
+              >
+                Komponenty
+              </BlogSidebarItem>
+            </>
           )}
         </ul>
+
+        {isAuthenticated && <BlogSidebarFooter />}
       </aside>
     </>
   );

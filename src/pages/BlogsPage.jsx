@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/BlogsPageStyle.css";
 import BlogCard from "../components/BlogCard";
-import TagList from "../components/TagsList";
+import TagList from "../components/Sidebar/TagsList";
 import Pagination from "../components/Pagination";
 import { getRequest } from "../api/apiAccessHelper";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -88,53 +88,50 @@ const BlogsPage = () => {
   }, [tagParam, searchParams.get("page")]);
 
   return (
-    <main>
-      <div className="blogs-container">
-        <header>
-          <h1>
-            Blogy{" "}
-            {tagParam && (
-              <span>
-                - Kategória: <strong>{tagParam}</strong>{" "}
-                <button onClick={clearTagFilter} className="clear-tag">
-                  ×
-                </button>
-              </span>
-            )}
-          </h1>
-        </header>
-        <div className="blogs-main">
-          <main>
-            {loading && blogs.length === 0 ? (
-              <div>Loading blogs...</div>
-            ) : error ? (
-              <div>{error}</div>
-            ) : blogs.length === 0 ? (
-              <p>No blogs found {tagParam && `for tag "${tagParam}"`}</p>
-            ) : (
-              <div className="blog-list">
-                {blogs.map((blog) => (
-                  <BlogCard
-                    key={blog.id}
-                    blogData={blog}
-                    onClickTag={handleTagSelect}
-                  />
-                ))}
-              </div>
-            )}
+    <div className="blogs-container">
+      <header>
+        <h1>
+          {tagParam && (
+            <span>
+              Kategória: <strong>{tagParam}</strong>{" "}
+              <button onClick={clearTagFilter} className="clear-tag">
+                ×
+              </button>
+            </span>
+          )}
+        </h1>
+      </header>
+      <div className="blogs-main">
+        <main>
+          {loading && blogs.length === 0 ? (
+            <div>Loading blogs...</div>
+          ) : error ? (
+            <div>{error}</div>
+          ) : blogs.length === 0 ? (
+            <p>No blogs found {tagParam && `for tag "${tagParam}"`}</p>
+          ) : (
+            <div className="blog-list">
+              {blogs.map((blog) => (
+                <BlogCard
+                  key={blog.id}
+                  blogData={blog}
+                  onClickTag={handleTagSelect}
+                />
+              ))}
+            </div>
+          )}
 
-            {loading && blogs.length > 0 && <div>Loading more...</div>}
-          </main>
-        </div>
-
-        <Pagination
-          currentPage={pageInfo.currentPage}
-          totalPages={pageInfo.totalPages}
-          loading={loading}
-          onPageChange={handlePageChange}
-        />
+          {loading && blogs.length > 0 && <div>Loading more...</div>}
+        </main>
       </div>
-    </main>
+
+      <Pagination
+        currentPage={pageInfo.currentPage}
+        totalPages={pageInfo.totalPages}
+        loading={loading}
+        onPageChange={handlePageChange}
+      />
+    </div>
   );
 };
 

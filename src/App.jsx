@@ -10,17 +10,18 @@ import {
 import LoginPage from "./pages/LoginPage.jsx";
 import BlogsPage from "./pages/BlogsPage.jsx";
 import BlogCreatePage from "./pages/BlogCreatePage.jsx";
-import BlogSidebar from "./components/BlogSidebar.jsx";
-import HeaderTry from "./pages/HeaderTry.jsx";
-import { useState, useEffect } from "react";
+import BlogSidebar from "./components/Sidebar/BlogSidebar.jsx";
+import Header from "./components/Header.jsx";
+import { useState, useEffect, useRef } from "react";
 import BlogEditPage from "./pages/BlogEditPage.jsx";
 import BlogDetailPage from "./pages/BlogDetailPage.jsx";
 import ComponentsManagementPage from "./pages/ComponentsManagementPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
-import TagList from "./components/TagsList.jsx";
+import TagList from "./components/Sidebar/TagsList.jsx";
 import ComponentSidebar from "./components/ComponentSidebar.jsx";
 
 import ProtectedRoute from "./pages/ProtectedRoute/ProtectedRoute.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 function AppLayout() {
   const location = useLocation();
@@ -29,6 +30,9 @@ function AppLayout() {
   const [activeComponent, setActiveComponent] = useState("footer");
   const searchParams = new URLSearchParams(location.search);
   const activeTag = searchParams.get("tag");
+
+  // Ref for the footer element
+  const footerRef = useRef(null);
 
   // Determine when to show sidebars
   const showTagsSidebar = ["/blogs"].some((path) =>
@@ -55,13 +59,18 @@ function AppLayout() {
 
   return (
     <div className="app-container">
-      <HeaderTry />
+      <Header />
       <div
         className={`content-container ${
           showTagsSidebar ? "with-tags-sidebar" : ""
         } ${showComponentSidebar ? "with-component-sidebar" : ""}`}
       >
-        <BlogSidebar />
+        {/* Left sidebar */}
+        <div className="left-sidebar-container">
+          <BlogSidebar />
+        </div>
+
+        {/* Main content */}
         <main className="main-content">
           <Routes>
             <Route path="/" element={<BlogsPage />} />
@@ -91,65 +100,68 @@ function AppLayout() {
           </Routes>
         </main>
 
-        {/* Tags Sidebar */}
-        {showTagsSidebar && (
-          <>
-            <button
-              className="tags-sidebar-toggle"
-              onClick={() => setTagsOpen(!tagsOpen)}
-              aria-label="Toggle tags"
-            >
-              {tagsOpen ? "×" : "#"}
-            </button>
+        {/* Right sidebars */}
+        <div className="right-sidebar-container">
+          {/* Tags Sidebar */}
+          {showTagsSidebar && (
+            <>
+              <button
+                className="tags-sidebar-toggle"
+                onClick={() => setTagsOpen(!tagsOpen)}
+                aria-label="Toggle tags"
+              >
+                {tagsOpen ? "×" : "#"}
+              </button>
 
-            <aside className={`tags-sidebar ${tagsOpen ? "open" : ""}`}>
-              <TagList
-                activeTag={activeTag}
-                onSelectTag={(tag) => {
-                  // Handle tag selection
-                  if (location.pathname.startsWith("/blogs")) {
-                    window.location.href = `/blogs?tag=${tag}`;
-                  }
-                  // Close sidebar on mobile after selecting
-                  if (window.innerWidth <= 768) {
-                    setTagsOpen(false);
-                  }
-                }}
-              />
-            </aside>
-          </>
-        )}
+              <aside className={`tags-sidebar ${tagsOpen ? "open" : ""}`}>
+                <TagList
+                  activeTag={activeTag}
+                  onSelectTag={(tag) => {
+                    // Handle tag selection
+                    if (location.pathname.startsWith("/blogs")) {
+                      window.location.href = `/blogs?tag=${tag}`;
+                    }
+                    // Close sidebar on mobile after selecting
+                    if (window.innerWidth <= 768) {
+                      setTagsOpen(false);
+                    }
+                  }}
+                />
+              </aside>
+            </>
+          )}
 
-        {/* Component Sidebar */}
-        {showComponentSidebar && (
-          <>
-            <button
-              className="component-sidebar-toggle"
-              onClick={() => setComponentsOpen(!componentsOpen)}
-              aria-label="Toggle components"
-            >
-              {componentsOpen ? "×" : "⚙️"}
-            </button>
+          {/* Component Sidebar */}
+          {showComponentSidebar && (
+            <>
+              <button
+                className="component-sidebar-toggle"
+                onClick={() => setComponentsOpen(!componentsOpen)}
+                aria-label="Toggle components"
+              >
+                {componentsOpen ? "×" : "⚙️"}
+              </button>
 
-            <aside
-              className={`component-sidebar ${componentsOpen ? "open" : ""}`}
-            >
-              <ComponentSidebar
-                components={componentsList}
-                activeComponent={activeComponent}
-                onSelectComponent={(componentId) => {
-                  setActiveComponent(componentId);
-                  // Close sidebar on mobile after selecting
-                  if (window.innerWidth <= 768) {
-                    setComponentsOpen(false);
-                  }
-                }}
-                isOpen={componentsOpen}
-                toggleSidebar={() => setComponentsOpen(!componentsOpen)}
-              />
-            </aside>
-          </>
-        )}
+              <aside
+                className={`component-sidebar ${componentsOpen ? "open" : ""}`}
+              >
+                <ComponentSidebar
+                  components={componentsList}
+                  activeComponent={activeComponent}
+                  onSelectComponent={(componentId) => {
+                    setActiveComponent(componentId);
+                    // Close sidebar on mobile after selecting
+                    if (window.innerWidth <= 768) {
+                      setComponentsOpen(false);
+                    }
+                  }}
+                  isOpen={componentsOpen}
+                  toggleSidebar={() => setComponentsOpen(!componentsOpen)}
+                />
+              </aside>
+            </>
+          )}
+        </div>
 
         {/* Overlay for mobile when any sidebar is open */}
         {(tagsOpen || componentsOpen) && window.innerWidth <= 768 && (
@@ -162,6 +174,7 @@ function AppLayout() {
           />
         )}
       </div>
+      <Footer ref={footerRef} />
     </div>
   );
 }
