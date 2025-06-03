@@ -2,6 +2,7 @@
   margin-top: 50px;
   background-color: var(--bg-blog-normal);
   max-width: 720px;
+  width: 100%;
   color: black;
   overflow: hidden;
 }
@@ -30,6 +31,14 @@
   overflow: hidden;
 }
 .blog-title:hover {
+  cursor: pointer;
+  color: var(--bg-feitCity-normal);
+  text-decoration: underline;
+}
+.blog-author {
+  margin-right: 10px;
+}
+.blog-author:hover {
   cursor: pointer;
   color: var(--bg-feitCity-normal);
   text-decoration: underline;
@@ -78,6 +87,18 @@
 .blog-content img {
   max-width: 50%;
   height: auto;
+}
+.blog-content pre,
+code {
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+  color: white;
+}
+.blog-content pre {
+  background-color: #afafaf;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .blog-card-buttons-container {
@@ -133,4 +154,12 @@
   align-items: center;
   gap: 5px;
   justify-content: center;
+}
+
+/* Add this to make blog cards more responsive */
+@media screen and (max-width: 955px) {
+  .blog-card {
+    max-width: 100%;
+    width: 100%;
+  }
 }

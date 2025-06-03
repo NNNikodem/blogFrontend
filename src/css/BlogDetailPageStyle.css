@@ -3,7 +3,8 @@
 :root {
   --alt-font: "Plus Jakarta Sans", sans-serif;
   --primary-font: "Inter", sans-serif;
-  --bg-blog-normal: #edf0f1;
+  --bg-blog-normal: #f8f4f4;
+  --blog-detail-text-color: #888888;
   --bg-feitCity-normal: rgba(217, 46, 10, 1);
   --bg-feitCity-hover: rgba(217, 46, 10, 0.8);
 }
@@ -21,7 +22,7 @@
 .blog-detail-container {
   background-color: var(--bg-blog-normal);
   padding: 2rem;
-  color: gray;
+  color: var(--blog-detail-text-color);
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -82,12 +83,28 @@
   margin: auto;
 }
 
-/* Fix for any pre or code blocks that might be in the content */
 .blog-detail-content pre,
-.blog-detail-content code {
+code {
   white-space: pre-wrap;
   word-break: break-all;
   overflow-x: auto;
+  color: white;
+}
+.blog-detail-content pre {
+  background-color: #afafaf;
+  padding: 10px;
+  border-radius: 8px;
+}
+.blog-detail-content blockquote {
+  border-left: 4px solid rgba(var(--orange-color), 0.4);
+  padding: 6px;
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+.blog-detail-content ul,
+ol {
+  padding-left: 1rem;
+  margin: 0.5rem 0;
 }
 
 /* Fix for links that might be long */
@@ -96,7 +113,6 @@
 }
 
 /* IKONKY */
-/* Add to your BlogDetailPageStyle.css file */
 .blog-detail-tags .tag-icon {
   margin-right: 8px;
   color: #666;

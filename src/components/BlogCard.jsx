@@ -9,12 +9,20 @@ import {
   faTags,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../context/AuthContext";
 
-const BlogCard = ({ blogData, onEditBlog, onViewMore, onClickTag }) => {
+const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
   const { title, content, tags, createdAt, author, mainImageUrl, id } =
     blogData;
   const navigate = useNavigate();
-
+  const { isAuthenticated, isAdmin, user } = useAuth();
+  const canEdit = isAdmin || (isAuthenticated && user.name === blogData.author);
+  const getSlug = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  };
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleDateString("sk-SK", {
         day: "2-digit",
@@ -23,7 +31,11 @@ const BlogCard = ({ blogData, onEditBlog, onViewMore, onClickTag }) => {
       })
     : "Date unavailable";
   const handleClick = (viewORedit) => {
-    navigate(`/${viewORedit}/${id}`);
+    if (viewORedit === "blog") {
+      navigate(`/blog/${id}-${getSlug(title)}`);
+    } else if (viewORedit === "edit") {
+      navigate(`/edit/${id}`);
+    }
   };
   return (
     <section key={id} className="blog-card">
@@ -52,12 +64,16 @@ const BlogCard = ({ blogData, onEditBlog, onViewMore, onClickTag }) => {
       >
         {title}
       </h2>
-      <p className="blog-published">
-        <FontAwesomeIcon icon={faUser} className="blog-icon" />{" "}
-        {author || "Unknown"},
-        <FontAwesomeIcon icon={faCalendarAlt} className="blog-icon" />{" "}
-        {formattedDate}
-      </p>
+      <div className="blog-published">
+        <span className="blog-author" onClick={() => onClickAuthor(author)}>
+          <FontAwesomeIcon icon={faUser} className="blog-icon" />
+          {author || "Neznámy autor"}
+        </span>
+        <span>
+          <FontAwesomeIcon icon={faCalendarAlt} className="blog-icon" />{" "}
+          {formattedDate}
+        </span>
+      </div>
 
       <div
         className="blog-content"
@@ -80,6 +96,16 @@ const BlogCard = ({ blogData, onEditBlog, onViewMore, onClickTag }) => {
         )}
       </div>
       <div className="blog-card-buttons-container">
+        {canEdit && (
+          <button
+            className="blog-card-edit-button"
+            onClick={() => {
+              handleClick("edit");
+            }}
+          >
+            <FontAwesomeIcon icon={faEye} /> Upraviť
+          </button>
+        )}
         <button
           className="blog-card-view-button"
           onClick={() => {

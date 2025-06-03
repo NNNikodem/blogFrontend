@@ -76,8 +76,7 @@
 
 .right-sidebar-container {
   position: relative;
-  width: 250px;
-  min-width: 250px;
+  max-width: fit-content;
 }
 
 /* Update content container to use flexbox */
@@ -99,18 +98,22 @@
   position: sticky;
   right: 0;
   top: 95px;
-  width: 250px;
+  width: auto;
+  min-width: fit-content;
   height: calc(100vh - 95px);
   max-height: calc(100vh - 95px);
   background-color: rgba(23, 22, 26, 1);
   border-left: 1px solid #e0e0e0;
   overflow-y: auto;
   transition: all 0.3s ease;
+  font-family: var(--alt-font);
   z-index: 100;
+  padding: 10px;
 }
 
 .tags-sidebar h3 {
   color: #fff;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 15px;
 }
 
@@ -128,15 +131,13 @@
   transition: all 0.3s ease;
   z-index: 100;
   font-family: var(--alt-font);
-  padding: 20px;
+  padding: 10px;
 }
 
 .component-sidebar h3 {
-  margin-top: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
   color: #fff;
-  font-size: 1.3rem;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
 }
 
 .component-list {
@@ -230,23 +231,11 @@
   margin-right: 15px;
   font-size: 1.2rem;
 }
-
-/* Adjust for smaller screens - icon only for logout */
-@media screen and (max-width: 1100px) {
-  .logout-button span {
-    display: none;
-  }
-
-  .logout-button .sidebar-nav-icon {
-    margin-right: 0;
-    font-size: 1.4rem;
-  }
-
-  .logout-button {
-    justify-content: center;
+@media screen and (max-width: 1145px) {
+  .tags-sidebar {
+    max-width: 200px;
   }
 }
-
 /* Responsive styles */
 @media screen and (max-width: 1100px) {
   /* Reduced sidebar with icons only */
@@ -273,11 +262,6 @@
     width: 90%;
   }
 
-  /* Reduce tags sidebar width */
-  .tags-sidebar {
-    max-width: 200px;
-  }
-
   /* Reduce component sidebar width - like tags sidebar */
   .component-sidebar {
     width: 180px;
@@ -288,11 +272,46 @@
     min-width: fit-content;
     max-width: fit-content;
   }
-
   .right-sidebar-container {
     width: fit-content;
-    min-width: fit-content;
     max-width: fit-content;
+  }
+  .logout-button span {
+    display: none;
+  }
+
+  .logout-button .sidebar-nav-icon {
+    margin-right: 0;
+    font-size: 1.4rem;
+  }
+
+  .logout-button {
+    justify-content: center;
+  }
+}
+@media screen and (max-width: 956px) and (min-width: 769px) {
+  .content-container {
+    justify-content: space-between;
+  }
+
+  .main-content {
+    max-width: calc(100% - 260px);
+    flex: 0 1 auto;
+  }
+
+  /* .right-sidebar-container {
+    flex: 0 0 auto;
+  } */
+
+  .tags-sidebar,
+  .component-sidebar {
+    max-width: 200px;
+  }
+
+  /* Fix for blog cards to prevent them from forcing a fixed width */
+  .blog-list {
+    align-items: stretch;
+    max-width: 100%;
   }
 }
 
@@ -387,21 +406,6 @@
   }
 }
 
-/* Fix for the 768px to 980px range - add this between your existing media queries */
-@media screen and (min-width: 769px) and (max-width: 980px) {
-  /* Ensure tags sidebar is visible and positioned correctly */
-  .tags-sidebar {
-    width: 180px;
-    transform: none;
-  }
-
-  /* Ensure component sidebar is visible and positioned correctly */
-  .component-sidebar {
-    width: 180px;
-    transform: none;
-  }
-}
-
 /* Sidebar container styles - this will be our parent element with position: relative */
 .sidebars-container {
   position: relative;
@@ -441,8 +445,6 @@
   transition: all 0.3s ease;
   z-index: 100;
 }
-
-/* Mobile view needs fixed positioning */
 @media screen and (max-width: 768px) {
   .blog-sidebar,
   .tags-sidebar,

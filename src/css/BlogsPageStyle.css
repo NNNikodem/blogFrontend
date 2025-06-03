@@ -12,21 +12,35 @@
   margin: 0;
   padding: 0;
 }
-.blogs-container {
-  max-width: 1200px;
-  width: 80%;
-  margin: 0 auto;
-}
-.blogs-main {
-  font-family: var(--primary-font);
-  display: grid;
-  gap: 2rem;
-}
+
+/* Update blog list to use full width */
 .blog-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
   align-items: center;
+  font-family: var(--primary-font);
+}
+
+/* Update .blog-list to be more responsive */
+@media screen and (max-width: 955px) {
+  .blog-list {
+    align-items: stretch;
+  }
+
+  .blogs-main {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Make blogs-main properly use space */
+.blogs-main {
+  display: flex; /* Change from grid to flex */
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
 }
 h1 {
   text-align: center;

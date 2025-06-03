@@ -29,7 +29,7 @@ const TagList = ({ activeTag, onSelectTag }) => {
     fetchTags();
   }, []);
   return (
-    <div className="tags-container">
+    <>
       <h3>Kategórie</h3>
       {loading ? (
         <p>Loading...</p>
@@ -47,7 +47,7 @@ const TagList = ({ activeTag, onSelectTag }) => {
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 };
 

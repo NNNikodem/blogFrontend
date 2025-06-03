@@ -19,17 +19,26 @@ const BlogsPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // Get the tag from URL query parameters
+  // Get the tag or author from URL query parameters
   const tagParam = searchParams.get("tag");
+  const authorParam = searchParams.get("author");
 
   // Handle tag selection
   const handleTagSelect = (tagName) => {
     // Reset to page 0 when changing tags
     navigate(`/blogs?tag=${tagName}`);
   };
-
   // Clear tag filter
   const clearTagFilter = () => {
+    navigate("/blogs");
+  };
+  // Handle author selection
+  const handleAuthorSelect = (authorName) => {
+    // Reset to page 0 when changing author
+    navigate(`/blogs?author=${authorName}`);
+  };
+  // Clear author filter
+  const clearAuthorFilter = () => {
     navigate("/blogs");
   };
 
@@ -43,6 +52,11 @@ const BlogsPage = () => {
         // Fetch blogs by tag
         data = await getRequest(
           `blog/tags?page=${page}&size=${searchSize}&tagNames=${tagParam}`
+        );
+      } else if (authorParam) {
+        // Fetch blogs by author
+        data = await getRequest(
+          `blog/author/${authorParam}?page=${page}&size=${searchSize}`
         );
       } else {
         // Fetch all blogs
@@ -85,44 +99,54 @@ const BlogsPage = () => {
     // Get page from URL or default to 0
     const page = parseInt(searchParams.get("page") || "0", 10);
     fetchBlogs(page);
-  }, [tagParam, searchParams.get("page")]);
+  }, [tagParam, authorParam, searchParams.get("page")]);
 
   return (
-    <div className="blogs-container">
-      <header>
+    <>
+      {tagParam && (
         <h1>
-          {tagParam && (
-            <span>
-              Kategória: <strong>{tagParam}</strong>{" "}
-              <button onClick={clearTagFilter} className="clear-tag">
-                ×
-              </button>
-            </span>
-          )}
+          <span>
+            Kategória: <strong>{tagParam}</strong>{" "}
+            <button onClick={clearTagFilter} className="clear-tag">
+              ×
+            </button>
+          </span>
         </h1>
-      </header>
+      )}
+      {authorParam && (
+        <h1>
+          <span>
+            Autor: <strong>{authorParam}</strong>{" "}
+            <button onClick={clearAuthorFilter} className="clear-tag">
+              ×
+            </button>
+          </span>
+        </h1>
+      )}
       <div className="blogs-main">
-        <main>
-          {loading && blogs.length === 0 ? (
-            <div>Loading blogs...</div>
-          ) : error ? (
-            <div>{error}</div>
-          ) : blogs.length === 0 ? (
-            <p>No blogs found {tagParam && `for tag "${tagParam}"`}</p>
-          ) : (
-            <div className="blog-list">
-              {blogs.map((blog) => (
-                <BlogCard
-                  key={blog.id}
-                  blogData={blog}
-                  onClickTag={handleTagSelect}
-                />
-              ))}
-            </div>
-          )}
+        {loading && blogs.length === 0 ? (
+          <div>Načítavam blogy...</div>
+        ) : error ? (
+          <div>{error}</div>
+        ) : blogs.length === 0 ? (
+          <p>
+            Žiadne blogy nenájdené {tagParam && `pre kategóriu "${tagParam}"`}{" "}
+            {authorParam && `podľa autora "${authorParam}"`}
+          </p>
+        ) : (
+          <div className="blog-list">
+            {blogs.map((blog) => (
+              <BlogCard
+                key={blog.id}
+                blogData={blog}
+                onClickTag={handleTagSelect}
+                onClickAuthor={handleAuthorSelect}
+              />
+            ))}
+          </div>
+        )}
 
-          {loading && blogs.length > 0 && <div>Loading more...</div>}
-        </main>
+        {loading && blogs.length > 0 && <div>Loading more...</div>}
       </div>
 
       <Pagination
@@ -131,7 +155,7 @@ const BlogsPage = () => {
         loading={loading}
         onPageChange={handlePageChange}
       />
-    </div>
+    </>
   );
 };
 

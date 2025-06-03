@@ -2,13 +2,17 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import TipTapEditor from "../components/TipTapEditor/TipTapEditor";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { postRequest } from "../api/apiAccessHelper";
 
-const BlogEditPage = ({ onEdit }) => {
+const BlogEditPage = () => {
   const [blogData, setBlogData] = useState(null);
   const [originalTags, setOriginalTags] = useState([]);
   const { blogId } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -64,32 +68,30 @@ const BlogEditPage = ({ onEdit }) => {
     try {
       // Create a copy of the blog data for the update
       const updatedBlog = { ...blogData };
-
-      // Always send tags with the update
-      console.log("Sending blog update with tags:", updatedBlog.tags);
-
-      console.log("Updated blog:", updatedBlog);
-      const response = await axios.put(
-        `http://localhost:8080/api/v1/blog/${blogId}`,
-        updatedBlog
-      );
-
-      if (onEdit && typeof onEdit === "function") {
-        onEdit(response.data);
+      const response = await postRequest(`blog/${blogId}`, updatedBlog);
+      // const response = await axios.post(
+      //   `http://localhost:8080/api/v1/blog/${blogId}`,
+      //   updatedBlog,
+      //   {
+      //     headers: {
+      //       Authentication: `Bearer ${user.token}`,
+      //     },
+      //   }
+      // );
+      if (response) {
+        setSuccess(true);
+        console.log("Blog bol úspešne aktualizovaný:", response);
       }
-
-      alert("Blog post updated successfully!");
     } catch (error) {
       console.error("Error updating blog:", error);
-      alert("Failed to update blog post. Please try again.");
+      alert("Nepodarilo sa aktualizovať blog. Skúste to prosím neskôr.");
+      setError(error.message);
     }
   };
 
   // Extract tag names for display
   const getTagString = (tags) => {
     if (!tags || !Array.isArray(tags)) return "";
-
-    // Since we're now always working with string tags, this is simpler
     return tags.join(", ");
   };
 
@@ -131,7 +133,7 @@ const BlogEditPage = ({ onEdit }) => {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group-tiptap-editor">
             <label htmlFor="content">Content:</label>
             <TipTapEditor
               content={blogData.content}

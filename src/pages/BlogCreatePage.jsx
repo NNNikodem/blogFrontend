@@ -154,7 +154,7 @@ const BlogCreatePage = () => {
             )}
           </div>
 
-          <div>
+          <div className="form-group-editor">
             <TipTapEditor
               content={content}
               onUpdate={handleEditorUpdate}

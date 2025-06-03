@@ -6,6 +6,7 @@ import {
   Route,
   Navigate,
   useLocation,
+  useNavigate,
 } from "react-router-dom";
 import LoginPage from "./pages/LoginPage.jsx";
 import BlogsPage from "./pages/BlogsPage.jsx";
@@ -25,6 +26,7 @@ import Footer from "./components/Footer/Footer.jsx";
 
 function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [tagsOpen, setTagsOpen] = useState(false);
   const [componentsOpen, setComponentsOpen] = useState(false);
   const [activeComponent, setActiveComponent] = useState("footer");
@@ -38,8 +40,14 @@ function AppLayout() {
   const showTagsSidebar = ["/blogs"].some((path) =>
     location.pathname.startsWith(path)
   );
+  const handleTagSelect = (tag) => {
+    navigate(`/blogs?tag=${tag}`);
+    // Close sidebar on mobile after selecting
+    if (window.innerWidth <= 768) {
+      setTagsOpen(false);
+    }
+  };
   const showComponentSidebar = location.pathname === "/components";
-
   // Component titles for display in sidebar
   const componentsList = [
     { id: "footer", title: "Footer" },
@@ -54,7 +62,7 @@ function AppLayout() {
     { id: "whyfeit", title: "Prečo FEIT" },
     { id: "countdown", title: "Časovač" },
     { id: "video", title: "Video" },
-    { id: "menu", title: "Header Menu" },
+    { id: "menu", title: "Navigačné Menu" },
   ];
 
   return (
@@ -79,7 +87,7 @@ function AppLayout() {
               path="/auth/feitcity/account/login"
               element={<LoginPage />}
             />
-            <Route path="/blog/:blogId" element={<BlogDetailPage />} />
+            <Route path="/blog/:blogIdAndSlug" element={<BlogDetailPage />} />
 
             {/* Protected routes */}
             <Route element={<ProtectedRoute />}>
@@ -114,19 +122,7 @@ function AppLayout() {
               </button>
 
               <aside className={`tags-sidebar ${tagsOpen ? "open" : ""}`}>
-                <TagList
-                  activeTag={activeTag}
-                  onSelectTag={(tag) => {
-                    // Handle tag selection
-                    if (location.pathname.startsWith("/blogs")) {
-                      window.location.href = `/blogs?tag=${tag}`;
-                    }
-                    // Close sidebar on mobile after selecting
-                    if (window.innerWidth <= 768) {
-                      setTagsOpen(false);
-                    }
-                  }}
-                />
+                <TagList activeTag={activeTag} onSelectTag={handleTagSelect} />
               </aside>
             </>
           )}

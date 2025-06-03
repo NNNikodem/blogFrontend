@@ -20,7 +20,9 @@ const BlogDetailPage = () => {
   const navigate = useNavigate();
   let formattedDate = "";
   //const navigate = useNavigate();
-  const { blogId } = useParams();
+  const { blogIdAndSlug } = useParams();
+  const [blogId, ...slugParts] = blogIdAndSlug.split("-");
+  const blogSlug = slugParts.join("-");
   if (blog) {
     formattedDate = blog.createdAt
       ? new Date(blog.createdAt).toLocaleDateString("sk-SK", {
@@ -43,13 +45,14 @@ const BlogDetailPage = () => {
         setError("Failed to load blog. Please try again later.");
       } finally {
         setLoading(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     };
 
     if (blogId) {
       fetchBlogDetails();
     }
-  }, []);
+  }, [blogId]);
 
   const handleBackClick = () => {
     navigate(-1); // Navigate back to the previous page

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
-import { getRequest, isLoading, getError } from "../../api/apiAccessHelper.js";
+import { getRequest } from "../../api/apiAccessHelper.js"; // Remove isLoading and getError
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMapMarkerAlt,
@@ -21,6 +21,8 @@ import FooterNavigation from "./FooterNavigation.jsx";
 const Footer = forwardRef((props, ref) => {
   const basePageUrl = "https://feitcity.sk/";
   const [footerData, setFooterData] = useState([]);
+  const [loading, setLoading] = useState(true); // Add local loading state
+  const [error, setError] = useState(null); // Add local error state
   const iconMap = {
     "fa-facebook-f": faFacebookF,
     "fa-instagram": faInstagram,
@@ -32,30 +34,30 @@ const Footer = forwardRef((props, ref) => {
   //Effect to fetch header items from backend
   useEffect(() => {
     const fetchFooterItems = async () => {
+      setLoading(true); // Set local loading state
+      setError(null);
       try {
         const response = await getRequest(`components/footer`);
         if (response) {
-          console.log("Footer items fetched successfully:", response);
           setFooterData(response);
         } else {
-          console.error("Failed to fetch footer items");
+          setError("Failed to fetch footer items");
         }
       } catch (error) {
+        setError(error.message || "Error fetching footer items");
         console.error("Error fetching footer items:", error);
+      } finally {
+        setLoading(false); // Clear local loading state
       }
     };
     fetchFooterItems();
   }, []);
 
-  if (isLoading() == true) {
+  if (loading) {
     return <div className="loading-indicator">Loading...</div>;
   }
-  if (getError() != null) {
-    return (
-      <div className="error-indicator">
-        Error: {getError().message || "Failed to load footer data"}
-      </div>
-    );
+  if (error) {
+    return <div className="error-indicator">Error: {error}</div>;
   }
   return (
     <footer className="footer">

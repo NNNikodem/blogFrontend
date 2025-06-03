@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
-const BlogSidebarFooter = ({ isAuthenticated, handleLogout }) => {
+const BlogSidebarFooter = ({ handleLogout }) => {
   return (
     <div className="sidebar-footer">
       <button className="logout-button" onClick={handleLogout}>

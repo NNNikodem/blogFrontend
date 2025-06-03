@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../css/BlogHeaderStyle.css";
 import NavButtonFeitCITY from "./NavButtonFeitCITY.jsx";
 import NavDropdown from "./NavDropdown.jsx";
-import { getRequest, isLoading, getError } from "../api/apiAccessHelper.js";
+import { getRequest } from "../api/apiAccessHelper.js"; // Remove isLoading and getError
 import ImageButton from "./ImageButton.jsx";
 
 const Header = () => {
@@ -13,6 +13,9 @@ const Header = () => {
   const [headerData, setHeaderData] = useState([]);
   const [dropdownItems, setDropdownItems] = useState([]);
   const [menuItems, setMenuItems] = useState([]);
+  // Add local loading and error states
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleHomeClick = () => {
     window.location.href = basePageUrl;
@@ -25,20 +28,24 @@ const Header = () => {
   //Effect to fetch header items from backend
   useEffect(() => {
     const fetchHeaderItems = async () => {
+      setLoading(true); // Set local loading state
+      setError(null);
       try {
         const response = await getRequest(`components/menu`);
         if (response) {
-          console.log("Header items fetched successfully:", response);
           setHeaderData(response);
           setMenuItems(response.menuItems || []);
           setDropdownItems(
             response.dropdownMenuItems[0].dropdownMenuItems || []
           );
         } else {
-          console.error("Failed to fetch header items");
+          setError("Failed to fetch header items");
         }
       } catch (error) {
+        setError(error.message || "Error fetching header items");
         console.error("Error fetching header items:", error);
+      } finally {
+        setLoading(false); // Clear local loading state
       }
     };
     fetchHeaderItems();
@@ -94,15 +101,11 @@ const Header = () => {
     };
   }, [mobileMenuOpen]);
 
-  if (isLoading() == true) {
+  if (loading) {
     return <div className="loading-indicator">Loading...</div>;
   }
-  if (getError() != null) {
-    return (
-      <div className="error-indicator">
-        Error: {getError().message || "Failed to load header data"}
-      </div>
-    );
+  if (error) {
+    return <div className="error-indicator">Error: {error}</div>;
   }
   return (
     <header className="blog-header">

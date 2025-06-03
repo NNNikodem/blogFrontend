@@ -109,7 +109,7 @@ const BlogSidebar = () => {
           )}
         </ul>
 
-        {isAuthenticated && <BlogSidebarFooter />}
+        {isAuthenticated && <BlogSidebarFooter handleLogout={handleLogout} />}
       </aside>
     </>
   );

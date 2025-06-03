@@ -30,12 +30,13 @@ export const AuthProvider = ({ children }) => {
         // Check if token is expired
         const currentTime = new Date().getTime();
         const expirationTime = new Date(authData.expiration).getTime();
-
         if (currentTime < expirationTime) {
           const hasAdminRole = checkAdmin(decoded);
           setUser({
             id: authData.userId,
+            token: authData.token,
             email: decoded.email,
+            name: decoded.name,
             admin: hasAdminRole,
           });
           // Check for admin role in the roles array
@@ -56,7 +57,11 @@ export const AuthProvider = ({ children }) => {
   // Login function
   const login = (accessToken) => {
     localStorage.setItem("accessToken", JSON.stringify(accessToken));
-    setUser({ id: accessToken.userId });
+    setUser({
+      id: accessToken.userId,
+      name: decodeToken(accessToken.token).name,
+      token: accessToken.token,
+    });
     setIsAdmin(accessToken.role === "admin");
     setIsAuthenticated(true);
   };
