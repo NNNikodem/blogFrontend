@@ -1,22 +1,3 @@
-.tags-container {
-  position: relative; /* Change from fixed to relative */
-  width: 100%; /* Take full width of parent */
-  height: 100%;
-  background-color: transparent; /* Remove background as parent has it */
-  overflow-y: auto;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-  transition: all 0.3s ease;
-  font-family: var(--alt-font);
-  padding: 20px;
-}
-.tags-container h3 {
-  margin-top: 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
-  color: #fff;
-  font-size: 1.3rem;
-}
-
 .tags-list {
   list-style: none;
   padding: 0;

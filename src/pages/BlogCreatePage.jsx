@@ -131,7 +131,7 @@ const BlogCreatePage = () => {
   };
 
   return (
-    <main>
+    <>
       <h1>Vytvorenie nového blogu</h1>
       <div className="create-post-container">
         <form className="create-blog-form">
@@ -218,7 +218,7 @@ const BlogCreatePage = () => {
           </div>
         )}
       </div>
-    </main>
+    </>
   );
 };
 

@@ -76,7 +76,6 @@ export const AuthProvider = ({ children }) => {
   const decodeToken = (token) => {
     try {
       const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded);
       return decoded;
     } catch (error) {
       console.error("Error decoding token:", error);

@@ -10,6 +10,7 @@ import {
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext";
+import BlogTagButton from "./BlogTagButton";
 
 const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
   const { title, content, tags, createdAt, author, mainImageUrl, id } =
@@ -83,13 +84,7 @@ const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
         <FontAwesomeIcon icon={faTags} className="blog-icon" />
         {tags.length > 0 ? (
           tags.map((tag, index) => (
-            <span
-              key={index}
-              className="blog-tag"
-              onClick={() => onClickTag(tag.name)}
-            >
-              {tag.name}
-            </span>
+            <BlogTagButton tag={tag} key={index} onSelectTag={onClickTag} />
           ))
         ) : (
           <span className="blog-tag-placeholder">žiadne kategórie</span>

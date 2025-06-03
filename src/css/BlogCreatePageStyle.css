@@ -1,9 +1,21 @@
 .create-post-container {
   max-width: 1000px;
-  margin: auto;
+  margin: 50px auto;
+  background-color: var(--bg-blog-normal);
 }
 .create-blog-form {
   padding: 1rem;
+}
+.create-blog-form button {
+  background-color: rgba(var(--orange-color), 0.1);
+  margin: 1rem auto;
+  color: var(--text-primary-color);
+  border: rgba(var(--orange-color), 0.4) solid 1px;
+  width: fit-content;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: larger;
 }
 .form-group {
   padding: 0.2rem;
@@ -113,23 +125,21 @@ code {
   word-break: break-all;
 }
 
+/* MESSAGES */
 .blogCreation-input-error {
   border: 2px solid #ff3b30;
   background-color: #fff8f8;
 }
-
 .blogCreation-editor-error .ProseMirror {
   border: 2px solid #ff3b30;
   background-color: #fff8f8;
 }
-
 .blogCreation-error-text {
   color: #ff3b30;
   font-size: 0.8rem;
   margin-top: 0.25rem;
   margin-bottom: 0;
 }
-
 .blogCreation-error-message {
   margin-top: 20px;
   padding: 15px;
@@ -138,8 +148,6 @@ code {
   border-radius: 4px;
   color: #ff3b30;
 }
-
-/* Success message styling */
 .blogCreation-success-message {
   margin-top: 20px;
   padding: 15px;
@@ -149,7 +157,6 @@ code {
   color: #2e7d32;
   text-align: center;
 }
-
 .blogCreation-success-message h3 {
   margin-top: 0;
   color: #2e7d32;

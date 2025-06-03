@@ -29,12 +29,12 @@
 .blog-detail-container h1 {
   color: black;
 }
-.blog-detail-image-container img {
+.blog-main-image {
   display: block;
   margin: auto;
   max-width: 100%;
   height: auto;
-  max-height: 65vh;
+  max-height: 65vh !important;
 }
 .blog-detail-image-container {
   position: relative;
@@ -134,6 +134,27 @@ ol {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+.gallery-button {
+  display: inline-flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin-left: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.gallery-button:hover {
+  background-color: #e0e0e0;
+}
+
+.gallery-button svg {
+  margin-right: 5px;
 }
 .back-button {
   display: flex;

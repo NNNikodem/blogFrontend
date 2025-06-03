@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getRequest, isLoading, getError } from "../api/apiAccessHelper";
+import { getRequest } from "../api/apiAccessHelper";
 import "../css/BlogDetailPageStyle.css";
-import TagList from "../components/Sidebar/TagsList";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,19 +9,27 @@ import {
   faTags,
   faArrowLeft,
   faClock,
+  faImages,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import "yet-another-react-lightbox/styles.css";
+import BlogTagButton from "../components/BlogTagButton";
 
 const BlogDetailPage = () => {
   const [blog, setBlog] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [allImages, setAllImages] = useState([]);
+  // Extract blogId and slug from the URL parameters
+  const { blogIdAndSlug } = useParams();
+  const [blogId, ...slugParts] = blogIdAndSlug.split("-");
+  //helpers
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  let formattedDate = "";
-  //const navigate = useNavigate();
-  const { blogIdAndSlug } = useParams();
-  const [blogId, ...slugParts] = blogIdAndSlug.split("-");
-  const blogSlug = slugParts.join("-");
+  // Format the date for display
+  let formattedDate = "Dátum neznámy";
   if (blog) {
     formattedDate = blog.createdAt
       ? new Date(blog.createdAt).toLocaleDateString("sk-SK", {
@@ -32,7 +39,10 @@ const BlogDetailPage = () => {
         })
       : "Date unavailable";
   }
-
+  const handleTagSelect = (tagName) => {
+    // Reset to page 0 when changing tags
+    navigate(`/blogs?tag=${tagName}`);
+  };
   useEffect(() => {
     const fetchBlogDetails = async () => {
       try {
@@ -42,7 +52,7 @@ const BlogDetailPage = () => {
         setError(null);
       } catch (err) {
         console.error("Error fetching blog details:", err);
-        setError("Failed to load blog. Please try again later.");
+        setError("Nepodarilo sa načítať blog. Skúste to prosím neskôr.");
       } finally {
         setLoading(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -54,30 +64,30 @@ const BlogDetailPage = () => {
     }
   }, [blogId]);
 
+  const openGallery = () => {
+    setOpen(true);
+  };
+  //collect all image URLs from the blog content and main image
+  useEffect(() => {
+    if (blog && blog.content) {
+      const contentDiv = document.querySelector(".blog-detail-content");
+      if (contentDiv) {
+        // Collect all image URLs including main image if available
+        const imgElements = contentDiv.querySelectorAll("img");
+        const imageUrls = Array.from(imgElements).map((img) => img.src);
+
+        if (blog.mainImageUrl) {
+          setAllImages([blog.mainImageUrl, ...imageUrls]);
+        } else {
+          setAllImages(imageUrls);
+        }
+      }
+    }
+  }, [blog]);
+
   const handleBackClick = () => {
     navigate(-1); // Navigate back to the previous page
   };
-  const handleFetchBlogsByTag = async (tagName = "") => {
-    setLoading(true);
-    setError(null);
-
-    const data = await getRequest(`blog/tags?tagNames=${tagName}`);
-
-    if (data) {
-      setBlogs(data.content || []);
-      setPageInfo({
-        currentPage: 0,
-        totalPages: Math.ceil(data.totalCount / searchSize) || 0,
-        totalItems: data.totalCount || 0,
-      });
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      setError("Failed to fetch blogs. Please try again later.");
-    }
-
-    setLoading(false);
-  };
-
   if (loading) {
     return (
       <div className="blog-detail-container">
@@ -85,7 +95,6 @@ const BlogDetailPage = () => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="blog-detail-container">
@@ -96,7 +105,6 @@ const BlogDetailPage = () => {
       </div>
     );
   }
-
   if (!blog) {
     return (
       <div className="blog-detail-container">
@@ -112,7 +120,11 @@ const BlogDetailPage = () => {
     <>
       <div className="blog-detail-container">
         <div className="blog-detail-image-container">
-          <img src={blog.mainImageUrl} alt="" />
+          <img
+            src={blog.mainImageUrl}
+            alt="Blog main image"
+            className="blog-main-image"
+          />
           <span>
             <FontAwesomeIcon icon={faCalendarAlt} /> {formattedDate}
           </span>
@@ -122,9 +134,11 @@ const BlogDetailPage = () => {
           <FontAwesomeIcon icon={faTags} className="tag-icon" />
           {blog.tags && blog.tags.length > 0 ? (
             blog.tags.map((tag, index) => (
-              <span className="blog-detail-tag" key={index}>
-                {tag.name}
-              </span>
+              <BlogTagButton
+                key={index}
+                tag={tag}
+                onSelectTag={handleTagSelect}
+              />
             ))
           ) : (
             <span className="blog-detail-tag-placeholder">
@@ -141,10 +155,35 @@ const BlogDetailPage = () => {
               <FontAwesomeIcon icon={faClock} /> {blog.readingTime} min read
             </span>
           )}
+          {allImages.length > 0 && (
+            <button className="gallery-button" onClick={openGallery}>
+              <FontAwesomeIcon icon={faImages} /> Galéria ({allImages.length}{" "}
+              obr.)
+            </button>
+          )}
         </div>
+        {/* BLOG OBSAH */}
         <div
           className="blog-detail-content"
           dangerouslySetInnerHTML={{ __html: blog.content }}
+        />
+        <Lightbox
+          open={open}
+          close={() => setOpen(false)}
+          slides={allImages.map((src) => ({ src }))}
+          carousel={{ finite: allImages.length <= 1 }}
+          render={{
+            buttonNext: allImages.length > 1 ? undefined : () => null,
+            buttonPrev: allImages.length > 1 ? undefined : () => null,
+          }}
+          controller={{
+            closeOnPullDown: true,
+          }}
+          plugins={[Zoom]}
+          zoom={{
+            scrollToZoom: true,
+            maxZoomPixelRatio: 5,
+          }}
         />
       </div>
     </>
