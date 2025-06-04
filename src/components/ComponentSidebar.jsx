@@ -1,10 +1,15 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 const ComponentSidebar = ({
   components,
   activeComponent,
   onSelectComponent,
 }) => {
+  const navigate = useNavigate();
+  const handleClick = (componentId) => {
+    onSelectComponent(componentId);
+    navigate(`/components?component=${componentId}`);
+  };
   return (
     <>
       <h3>Komponenty</h3>
@@ -13,7 +18,9 @@ const ComponentSidebar = ({
           <li
             key={component.id}
             className={activeComponent === component.id ? "active" : ""}
-            onClick={() => onSelectComponent(component.id)}
+            onClick={() => {
+              handleClick(component.id);
+            }}
           >
             {component.title}
           </li>

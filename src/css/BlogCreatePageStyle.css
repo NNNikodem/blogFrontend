@@ -78,6 +78,8 @@ label {
   background-color: white;
   color: var(--blog-detail-text-color);
   caret-color: rgba(var(--orange-color), 1);
+  font-family: var(--alt-font);
+  line-height: 1.6;
 }
 .tiptap-editor-content .ProseMirror-focused {
   outline: rgba(var(--orange-color), 0.2) solid 1px;
@@ -121,8 +123,17 @@ code {
 .tiptap-editor-content ol {
   margin-left: 20px;
 }
+.tiptap-editor-content p {
+  margin: 10px 0;
+}
 .tiptap-editor-content a {
   word-break: break-all;
+  color: var(--text-secondary-color);
+}
+.tiptap-editor-content a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgba(var(--orange-color), 1);
 }
 
 /* MESSAGES */

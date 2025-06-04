@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 import { getRequest, putRequest, postRequest } from "../api/apiAccessHelper";
 import "../css/ComponentsManagementPage.css";
 import ComponentEditor from "../components/ComponentEditor";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ComponentsManagementPage = ({ activeComponent, componentList }) => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
   // State for all components
   const [components, setComponents] = useState({
     footer: null,
@@ -26,6 +30,13 @@ const ComponentsManagementPage = ({ activeComponent, componentList }) => {
   const [loading, setLoading] = useState({});
   const [error, setError] = useState({});
 
+  // Update URL when activeComponent changes
+  useEffect(() => {
+    if (activeComponent) {
+      navigate(`/components?component=${activeComponent}`, { replace: true });
+    }
+  }, [activeComponent, navigate]);
+
   // Fetch all components on page load
   useEffect(() => {
     fetchAllComponents();
@@ -34,7 +45,6 @@ const ComponentsManagementPage = ({ activeComponent, componentList }) => {
   const fetchAllComponents = async () => {
     // Use Promise.all to fetch all components in parallel
     await Promise.all(componentsList.map((comp) => fetchComponent(comp.id)));
-    console.log("All components fetched successfully");
   };
 
   const fetchComponent = async (componentName) => {
@@ -60,14 +70,12 @@ const ComponentsManagementPage = ({ activeComponent, componentList }) => {
   };
 
   const updateComponent = async (componentName, componentData) => {
-    console.log(`Updating component: ${componentName}`, componentData);
     setLoading((prev) => ({ ...prev, [componentName]: true }));
     setError((prev) => ({ ...prev, [componentName]: null }));
 
     try {
       let data;
       // Use the appropriate HTTP method based on the component name
-      console.log(`Sending request to update ${componentName}`);
       data = await postRequest(`components/${componentName}`, componentData);
       // Update the component in state
       setComponents((prev) => ({

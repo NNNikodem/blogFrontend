@@ -173,6 +173,58 @@ export const putRequest = async (endpoint, body) => {
     throw error;
   }
 };
+export const deleteRequest = async (endpoint, options = {}) => {
+  loading = true;
+  error = null;
+
+  try {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeaders(),
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
+
+    // Check if the response has content
+    const contentType = response.headers.get("content-type");
+    const contentLength = response.headers.get("content-length");
+
+    // Handle successful response with no content (common for DELETE requests)
+    if (
+      response.status === 204 ||
+      !contentType ||
+      !contentLength ||
+      parseInt(contentLength, 10) === 0
+    ) {
+      return { success: true };
+    }
+
+    // If there is content and it's JSON, parse it
+    let data;
+    if (contentType && contentType.includes("application/json")) {
+      data = await response.json();
+    } else {
+      data = await response.text();
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        typeof data === "object" ? data.message : data || "Something went wrong"
+      );
+    }
+
+    return data;
+  } catch (err) {
+    error = err.message;
+    console.error("DELETE request error:", err);
+    return null;
+  } finally {
+    loading = false;
+  }
+};
 
 export const isLoading = () => loading;
 export const getError = () => error;

@@ -19,12 +19,16 @@
   position: relative;
   bottom: 60px;
 }
+.blog-data-container {
+  padding: 2rem;
+}
 .blog-detail-container {
   background-color: var(--bg-blog-normal);
-  padding: 2rem;
+
   color: var(--blog-detail-text-color);
   word-wrap: break-word;
   overflow-wrap: break-word;
+  max-width: 900px;
 }
 .blog-detail-container h1 {
   color: black;
@@ -78,9 +82,10 @@
 .blog-detail-content,
 .blog-detail-title,
 .blog-detail-published {
-  padding: 1rem;
+  line-height: 1.6;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-family: var(--alt-font);
 }
 .blog-detail-content img {
   display: block;
@@ -114,10 +119,17 @@ ol {
   padding-left: 1rem;
   margin: 0.5rem 0;
 }
-
+.blog-detail-content p {
+  margin: 10px 0;
+}
 /* Fix for links that might be long */
 .blog-detail-content a {
   word-break: break-all;
+  color: var(--text-secondary-color);
+}
+.blog-detail-content a:hover {
+  text-decoration: underline;
+  color: rgba(var(--orange-color), 1);
 }
 
 /* IKONKY */
@@ -174,6 +186,35 @@ ol {
 }
 .back-button:hover {
   background-color: rgba(var(--orange-color), 0.6);
+  color: white;
+  cursor: pointer;
+}
+
+.blog-detail-edit-button {
+  align-items: center;
+  border: rgba(var(--orange-color), 1) solid 1px;
+  background-color: rgba(var(--orange-color), 0.2);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  margin-left: 10px;
+}
+.blog-detail-edit-button:hover {
+  background-color: rgba(var(--orange-color), 0.8);
+  color: white;
+  cursor: pointer;
+}
+.blog-detail-delete-button {
+  align-items: center;
+  border: rgba(var(--orange-color), 1) solid 1px;
+  background-color: rgba(var(--orange-color), 0.2);
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+  margin-left: 10px;
+}
+.blog-detail-delete-button:hover {
+  background-color: rgba(var(--orange-color), 0.8);
   color: white;
   cursor: pointer;
 }

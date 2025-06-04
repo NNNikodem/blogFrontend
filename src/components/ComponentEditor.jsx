@@ -120,8 +120,8 @@ const ComponentEditor = ({
   };
 
   // Recursive function to render form fields for nested objects and arrays
-  //key is the name of object's element
-  //value is its value
+  // key is the name of object's element
+  // value is its value
   // path the path to the current field in the object
   const renderFormField = (key, value, path = []) => {
     const currentPath = [...path, key];
@@ -149,6 +149,8 @@ const ComponentEditor = ({
         path[0] === "dropdownMenuItems" &&
         path[1] === 0 &&
         key === "dropdownMenuItems";
+      const isFeitStoryComponentPath =
+        componentName === "feitstory" && key === "videoItemList";
       const isLogoComponentPath =
         componentName === "logocomponent" && key === "logoItems";
       const isFooterLocationPath =
@@ -224,7 +226,7 @@ const ComponentEditor = ({
                   </div>
                 );
               })}
-
+              {/* MENU COMPONENT */}
               {(isMenuItemsPath || isDropdownSubItemsPath) && (
                 <button
                   className="components-add-button"
@@ -253,7 +255,7 @@ const ComponentEditor = ({
                   {isMenuItemsPath ? "Menu Položku" : "Dropdown Položku"}
                 </button>
               )}
-              {/* HERE */}
+              {/* LOGO COMPONENT */}
               {isLogoComponentPath && (
                 <div
                   className="logo-upload-container"
@@ -266,7 +268,7 @@ const ComponentEditor = ({
                       onChange={(e) => {
                         const file = e.target.files[0];
                         if (file) {
-                          uploadLogoImage(file, currentPath, key);
+                          handleInternUpload(file, currentPath, key);
                           // Clear the input so the same file can be selected again if needed
                           e.target.value = "";
                         }
@@ -280,6 +282,9 @@ const ComponentEditor = ({
                   )}
                 </div>
               )}
+              {/* FEIT STORY COMPONENT*/}
+
+              {/* FOOTER COMPONENT */}
               {(isFooterLocationPath ||
                 isFooterContactPath ||
                 isFooterSocialPath ||
@@ -512,7 +517,7 @@ const ComponentEditor = ({
       });
   };
 
-  const uploadLogoImage = async (file, currentPath, key) => {
+  const handleInternUpload = async (file, currentPath, key, componentType) => {
     if (!file) return;
 
     setLoading(true);
@@ -524,10 +529,7 @@ const ComponentEditor = ({
       formData.append("file", file);
 
       // Use postRequest helper instead of direct fetch
-      const data = await postRequest(
-        "components/logocomponent/upload",
-        formData
-      );
+      const data = await postRequest("components/intern/upload", formData);
 
       if (!data || data.error) {
         throw new Error(data?.error || "Failed to upload image");
@@ -543,14 +545,22 @@ const ComponentEditor = ({
         current = current[currentPath[i]];
       }
 
-      // Add the new logo item with the uploaded image URL
-      const newItem = {
-        imageUrl: imageUrl, //BASE_IMG_URL+
-        alt: file.name.split(".")[0], // Use filename as default alt text
-        id: current[key].length + 1,
-      };
+      if (componentType === "feitstory") {
+        const newItem = {
+          imageUrl: imageUrl,
+          alt: file.name.split(".")[0], // Use filename as default alt text
+          id: current[key].length + 1,
+        };
+      } else {
+        // For logocomponent, add a new logo item
+        const newItem = {
+          imageUrl: imageUrl,
+          alt: file.name.split(".")[0], // Use filename as default alt text
+          id: current[key].length + 1,
+        };
+        current[key].push(newItem);
+      }
 
-      current[key].push(newItem);
       setEditedComponent(updatedComponent);
     } catch (err) {
       setError(err.message || "Error uploading image");

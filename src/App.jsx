@@ -14,6 +14,7 @@ import BlogCreatePage from "./pages/BlogCreatePage.jsx";
 import BlogSidebar from "./components/Sidebar/BlogSidebar.jsx";
 import Header from "./components/Header.jsx";
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
 import BlogEditPage from "./pages/BlogEditPage.jsx";
 import BlogDetailPage from "./pages/BlogDetailPage.jsx";
 import ComponentsManagementPage from "./pages/ComponentsManagementPage.jsx";
@@ -29,9 +30,12 @@ function AppLayout() {
   const navigate = useNavigate();
   const [tagsOpen, setTagsOpen] = useState(false);
   const [componentsOpen, setComponentsOpen] = useState(false);
-  const [activeComponent, setActiveComponent] = useState("footer");
   const searchParams = new URLSearchParams(location.search);
   const activeTag = searchParams.get("tag");
+  const activeComponent = searchParams.get("component");
+  // If no active component is specified, default to the first component
+  const defaultComponent = "footer";
+  const componentToShow = activeComponent || defaultComponent;
 
   // Ref for the footer element
   const footerRef = useRef(null);
@@ -98,7 +102,7 @@ function AppLayout() {
                 element={
                   <ComponentsManagementPage
                     componentList={componentsList}
-                    activeComponent={activeComponent}
+                    activeComponent={componentToShow}
                   />
                 }
               />
@@ -145,7 +149,6 @@ function AppLayout() {
                   components={componentsList}
                   activeComponent={activeComponent}
                   onSelectComponent={(componentId) => {
-                    setActiveComponent(componentId);
                     // Close sidebar on mobile after selecting
                     if (window.innerWidth <= 768) {
                       setComponentsOpen(false);
