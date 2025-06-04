@@ -61,7 +61,6 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
   try {
     // Check if we're dealing with FormData (for multipart/form-data requests)
     const isFormData = body instanceof FormData;
-
     // Set up headers based on content type
     const headers = isFormData
       ? {

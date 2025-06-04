@@ -36,11 +36,7 @@ const MenuBar = ({ editor }) => {
       formData.append("file", file);
 
       // Upload the image using the API helper with explicit headers
-      const response = await postRequest("image", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await postRequest("image", formData, {});
 
       // Get the image URL from the response
       const imageUrl = response.url || response.imageUrl || response;
