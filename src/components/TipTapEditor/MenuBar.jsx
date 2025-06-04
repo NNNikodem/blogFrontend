@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { postRequest } from "../../api/apiAccessHelper";
 import {
   faHeading,
   faBold,
@@ -35,23 +35,15 @@ const MenuBar = ({ editor }) => {
       const formData = new FormData();
       formData.append("file", file);
 
-      // Show loading state if desired
-      // You could add a loading indicator here
-
-      // Upload the image to the API
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/image",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      // Upload the image using the API helper with explicit headers
+      const response = await postRequest("image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       // Get the image URL from the response
-      const imageUrl =
-        response.data.url || response.data.imageUrl || response.data;
+      const imageUrl = response.url || response.imageUrl || response;
 
       // Insert the image into the editor
       editor.chain().focus().setImage({ src: imageUrl }).run();
