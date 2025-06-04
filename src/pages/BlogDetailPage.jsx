@@ -31,7 +31,7 @@ const BlogDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { isAuthenticated, isAdmin, user } = useAuth();
-  const canEdit = isAdmin || (isAuthenticated && user.name === blog.author);
+  const canEdit = isAdmin || (isAuthenticated && user.name === blog?.author);
   const navigate = useNavigate();
   // Format the date for display
   let formattedDate = "Dátum neznámy";

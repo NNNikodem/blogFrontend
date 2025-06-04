@@ -416,6 +416,7 @@
 
 /* Left sidebar (blog sidebar) remains on the left */
 .blog-sidebar {
+  font-family: var(--alt-font);
   position: sticky;
   left: 0;
   top: 95px;

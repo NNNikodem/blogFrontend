@@ -218,3 +218,11 @@ ol {
   color: white;
   cursor: pointer;
 }
+
+.youtube-video {
+  display: block;
+  max-width: 60%;
+  max-height: 400px;
+  margin: auto;
+  margin-top: 1rem;
+}

@@ -7,9 +7,9 @@
 .footer-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: space-around;
   background-color: rgba(var(--footer-bg-color), 1);
-  padding: 40px 100px;
+  padding: 60px 0;
   gap: 20px;
   max-width: 1220px;
   margin-left: auto;
@@ -20,7 +20,7 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  max-width: fit-content;
+  padding: 0 15px;
 }
 .footer-column h4 {
   margin-top: 0;
@@ -31,6 +31,7 @@
   color: var(--text-secondary-color);
   text-decoration: none;
   transition: color 0.3s ease;
+  padding: 5px;
 }
 .footer-link:hover {
   color: rgba(var(--orange-color), 1);
@@ -41,6 +42,15 @@
 }
 .footer-icon-link:hover {
   color: var(--text-primary-color);
+}
+.footer-maps-link {
+  color: var(--text-secondary-color);
+  transition: all 0.3s ease-in-out;
+  margin-top: 20px;
+  font-size: small;
+}
+.footer-maps-link:hover {
+  color: rgba(var(--orange-color), 1);
 }
 .footer-socials ul {
   display: flex;
@@ -78,6 +88,20 @@
 .footer-copyright {
   flex: 0 0 auto;
   color: var(--text-secondary-color);
+}
+.footer-column-header {
+  display: flex;
+  margin-bottom: 10px;
+}
+.footer-column-header h3 {
+  margin-left: 10px;
+}
+.ti-shopping-cart {
+  font-size: 24px;
+  color: rgba(var(--orange-color), 1);
+}
+.feather {
+  color: rgba(var(--orange-color), 1);
 }
 
 @media (max-width: 992px) {

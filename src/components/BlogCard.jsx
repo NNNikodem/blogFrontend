@@ -97,7 +97,7 @@ const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
         )}
       </div>
       <div className="blog-card-buttons-container">
-        {canEdit && (
+        {/* {canEdit && (
           <button
             className="blog-card-edit-button"
             onClick={() => {
@@ -106,7 +106,7 @@ const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
           >
             <FontAwesomeIcon icon={faEdit} /> Upraviť
           </button>
-        )}
+        )} */}
         <button
           className="blog-card-view-button"
           onClick={() => {

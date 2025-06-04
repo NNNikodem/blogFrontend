@@ -3,6 +3,8 @@ const FooterLink = ({ path, children, type }) => {
   let className = "footer-link";
   if (type === "icon") {
     className = "footer-icon-link";
+  } else if (type === "maps") {
+    className = "footer-maps-link";
   }
   return (
     <a

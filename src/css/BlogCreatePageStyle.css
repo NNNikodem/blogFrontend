@@ -17,6 +17,11 @@
   cursor: pointer;
   font-size: larger;
 }
+.create-blog-form button:hover {
+  background-color: rgba(var(--orange-color), 1);
+  color: var(--text-primary-color);
+  transition: all 0.3s ease;
+}
 .form-group {
   padding: 0.2rem;
   text-align: center;

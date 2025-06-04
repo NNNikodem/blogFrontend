@@ -29,6 +29,7 @@ const BlogSidebar = () => {
   const handleLogout = () => {
     logout();
     closeSidebar();
+    window.location.reload();
   };
 
   // Close sidebar when clicking outside on mobile
