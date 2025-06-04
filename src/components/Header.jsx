@@ -193,12 +193,29 @@ const Header = () => {
         ref={menuRef}
       >
         <ul className="mobile-nav-links">
-          <NavButtonFeitCITY path={"#ofakulte"}>O fakulte</NavButtonFeitCITY>
-          <NavButtonFeitCITY path={"#preco"}>Prečo na FEIT?</NavButtonFeitCITY>
-          <NavButtonFeitCITY path={"#costudovat"}>
-            Čo študovať?
-          </NavButtonFeitCITY>
-          <NavButtonFeitCITY path={"dod"}>DOD</NavButtonFeitCITY>
+          {Array.isArray(menuItems) && menuItems.length > 0 ? (
+            menuItems
+              .filter((item) => item.url !== "#faq")
+              .map((item) => (
+                <NavButtonFeitCITY key={item.id} path={item.url}>
+                  {item.text}
+                </NavButtonFeitCITY>
+              ))
+          ) : (
+            //fallback to hardcoded items if no data is available
+            <>
+              <NavButtonFeitCITY path={"#ofakulte"}>
+                O Fakulte
+              </NavButtonFeitCITY>
+              <NavButtonFeitCITY path={"#preco"}>
+                Prečo na FEIT?
+              </NavButtonFeitCITY>
+              <NavButtonFeitCITY path={"#costudovat"}>
+                Čo študovať?
+              </NavButtonFeitCITY>
+              <NavButtonFeitCITY path={"dod"}>DOD</NavButtonFeitCITY>
+            </>
+          )}
           {dropdownItems?.length > 0 && (
             <NavDropdown isMobile={true} dropdownData={dropdownItems}>
               {headerData.dropdownMenuItems[0].text}

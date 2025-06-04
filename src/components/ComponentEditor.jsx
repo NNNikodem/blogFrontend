@@ -10,7 +10,7 @@ const ComponentEditor = ({
   updateFn,
 }) => {
   const CHARACTER_COUNT_TO_TEXTAREA = 80; // Character count threshold to switch to textarea
-  const BASE_IMG_PATH = "http://localhost:8080/api/v1/images/"; // Base path for images
+  // const BASE_IMG_PATH = "http://localhost:8080/api/v1/images/"; // Base path for images
   const [editedComponent, setEditedComponent] = useState(component);
   const [expandedSections, setExpandedSections] = useState({});
   const [loading, setLoading] = useState(false);
@@ -53,6 +53,7 @@ const ComponentEditor = ({
     videoItemList: "Zoznam videí",
     //slider - zivot na FEIT
     iconsStyle: "Štýl ikoniek",
+    infoDescription: "Popis informácií",
     //dod
     buttonText: "Text tlačidla",
     buttonLink: "URL Odkaz tlačidla",
@@ -150,6 +151,16 @@ const ComponentEditor = ({
         key === "dropdownMenuItems";
       const isLogoComponentPath =
         componentName === "logocomponent" && key === "logoItems";
+      const isFooterLocationPath =
+        componentName === "footer" && key === "locationColumn";
+      const isFooterContactPath =
+        componentName === "footer" && key === "contactColumn";
+      const isFooterSocialPath =
+        componentName === "footer" && key === "socialColumn";
+      const isFooterShopPath =
+        componentName === "footer" && key === "shopColumn";
+      const isFooterNavigationPath =
+        componentName === "footer" && key === "navigationColumn";
       return (
         <div key={currentPath.join(".")} className="form-group nested-group">
           <div
@@ -172,6 +183,15 @@ const ComponentEditor = ({
                   <div key={itemPath.join(".")} className="array-item">
                     <div className="array-item-header">
                       <span>Položka {index + 1}</span>
+                      <button
+                        className="delete-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(itemPath);
+                        }}
+                      >
+                        Odstrániť
+                      </button>
                     </div>
                     {typeof item === "object" && item !== null ? (
                       <div className="nested-object">
@@ -233,7 +253,7 @@ const ComponentEditor = ({
                   {isMenuItemsPath ? "Menu Položku" : "Dropdown Položku"}
                 </button>
               )}
-
+              {/* HERE */}
               {isLogoComponentPath && (
                 <div
                   className="logo-upload-container"
@@ -260,6 +280,75 @@ const ComponentEditor = ({
                   )}
                 </div>
               )}
+              {(isFooterLocationPath ||
+                isFooterContactPath ||
+                isFooterSocialPath ||
+                isFooterShopPath ||
+                isFooterNavigationPath) && (
+                <button
+                  className="components-add-button"
+                  onClick={() => {
+                    const updatedComponent = JSON.parse(
+                      JSON.stringify(editedComponent)
+                    );
+                    let current = updatedComponent;
+
+                    for (let i = 0; i < currentPath.length - 1; i++) {
+                      current = current[currentPath[i]];
+                    }
+
+                    // Create different item structures based on the section type
+                    let newItem;
+                    if (isFooterLocationPath) {
+                      newItem = {
+                        text: "",
+                        url: "",
+                        id: current[key].length + 1,
+                      };
+                    } else if (isFooterContactPath) {
+                      newItem = {
+                        text: "",
+                        url: "",
+                        id: current[key].length + 1,
+                      };
+                    } else if (isFooterSocialPath) {
+                      newItem = {
+                        text: "",
+                        url: "",
+                        icon: "",
+                        id: current[key].length + 1,
+                      };
+                    } else if (isFooterShopPath) {
+                      newItem = {
+                        text: "",
+                        url: "",
+                        id: current[key].length + 1,
+                      };
+                    } else if (isFooterNavigationPath) {
+                      newItem = {
+                        text: "",
+                        url: "",
+                        id: current[key].length + 1,
+                      };
+                    }
+
+                    current[key].push(newItem);
+                    setEditedComponent(updatedComponent);
+                  }}
+                  style={{ marginTop: "10px" }}
+                >
+                  + Pridaj{" "}
+                  {isFooterLocationPath
+                    ? "Adresu"
+                    : isFooterContactPath
+                    ? "Kontakt"
+                    : isFooterSocialPath
+                    ? "Sociálnu sieť"
+                    : isFooterShopPath
+                    ? "Odkaz na obchod"
+                    : "Navigačný odkaz"}
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -273,7 +362,20 @@ const ComponentEditor = ({
             className="nested-header"
             onClick={() => toggleExpand(currentPath)}
           >
-            <label>{getTranslatedLabel(key)} (Objekt)</label>
+            <div className="form-group-header">
+              <label>{getTranslatedLabel(key)} (Objekt)</label>
+              {currentPath.length > 1 && (
+                <button
+                  className="delete-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(currentPath);
+                  }}
+                >
+                  Odstrániť
+                </button>
+              )}
+            </div>
             <span className="expand-icon">
               {isExpanded(currentPath) ? "▼" : "►"}
             </span>
@@ -443,7 +545,7 @@ const ComponentEditor = ({
 
       // Add the new logo item with the uploaded image URL
       const newItem = {
-        imageUrl: BASE_IMG_PATH + imageUrl,
+        imageUrl: imageUrl, //BASE_IMG_URL+
         alt: file.name.split(".")[0], // Use filename as default alt text
         id: current[key].length + 1,
       };
@@ -455,6 +557,31 @@ const ComponentEditor = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  // Add this function before the return statement
+  const handleDelete = (path) => {
+    // Don't allow deleting top-level properties
+    if (path.length <= 1) return;
+
+    // Create a deep copy of the component
+    const updatedComponent = JSON.parse(JSON.stringify(editedComponent));
+
+    // Navigate to the parent of the element to delete
+    let parent = updatedComponent;
+    for (let i = 0; i < path.length - 1; i++) {
+      parent = parent[path[i]];
+    }
+
+    const lastKey = path[path.length - 1];
+
+    // Handle array items vs object properties
+    if (Array.isArray(parent)) {
+      parent.splice(lastKey, 1);
+    } else {
+      delete parent[lastKey];
+    }
+    setEditedComponent(updatedComponent);
   };
 
   return (

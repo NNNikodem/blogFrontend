@@ -81,6 +81,7 @@ export const postRequest = async (endpoint, body = {}, options = {}) => {
       ...options,
     });
     console.log("Response status:", response);
+    console.log("Sending headers:", headers);
     let data = response;
     try {
       data = await response.json();

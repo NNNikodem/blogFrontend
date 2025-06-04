@@ -138,6 +138,7 @@ const BlogDetailPage = () => {
                 key={index}
                 tag={tag}
                 onSelectTag={handleTagSelect}
+                blogCard={false}
               />
             ))
           ) : (

@@ -1,6 +1,9 @@
-const BlogTagButton = ({ tag, onSelectTag }) => {
+const BlogTagButton = ({ tag, onSelectTag, blogCard }) => {
   return (
-    <span className="blog-tag" onClick={() => onSelectTag(tag.name)}>
+    <span
+      className={blogCard ? "blog-tag" : "blog-detail-tag"}
+      onClick={() => onSelectTag(tag.name)}
+    >
       {tag.name}
     </span>
   );

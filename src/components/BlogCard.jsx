@@ -8,6 +8,7 @@ import {
   faUser,
   faTags,
   faEye,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../context/AuthContext";
 import BlogTagButton from "./BlogTagButton";
@@ -84,7 +85,12 @@ const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
         <FontAwesomeIcon icon={faTags} className="blog-icon" />
         {tags.length > 0 ? (
           tags.map((tag, index) => (
-            <BlogTagButton tag={tag} key={index} onSelectTag={onClickTag} />
+            <BlogTagButton
+              tag={tag}
+              key={index}
+              onSelectTag={onClickTag}
+              blogCard={true}
+            />
           ))
         ) : (
           <span className="blog-tag-placeholder">žiadne kategórie</span>
@@ -98,7 +104,7 @@ const BlogCard = ({ blogData, onClickAuthor, onClickTag }) => {
               handleClick("edit");
             }}
           >
-            <FontAwesomeIcon icon={faEye} /> Upraviť
+            <FontAwesomeIcon icon={faEdit} /> Upraviť
           </button>
         )}
         <button

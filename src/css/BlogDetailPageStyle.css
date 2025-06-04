@@ -60,13 +60,21 @@
   color: white;
   border-radius: 16px;
   padding: 3px 10px;
-  margin-right: 5px;
+  margin: 2px 3px;
   transition: all 0.2s ease-in-out;
 }
-.blog-detail-tag-placeholder {
-  color: rgb(180, 180, 180);
+.blog-detail-tag:hover {
+  cursor: pointer;
+  background-color: rgba(var(--orange-color), 0.7);
+  text-decoration: underline;
 }
-
+.blog-detail-tag:before {
+  content: "#";
+}
+.blog-detail-tag-placeholder {
+  color: rgb(179, 179, 179);
+  font-size: small;
+}
 .blog-detail-content,
 .blog-detail-title,
 .blog-detail-published {
