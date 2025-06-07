@@ -1,14 +1,19 @@
 import React, { useEffect, useState, useRef } from "react";
-import { postRequest } from "../api/apiAccessHelper";
+import { getRequest, postRequest } from "../api/apiAccessHelper";
 import TipTapEditor from "../components/TipTapEditor/TipTapEditor";
 import "../css/BlogCreatePageStyle.css";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const BlogCreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [tags, setTags] = useState("");
+  const [availableTags, setAvailableTags] = useState([]); // Renamed from tags
+  const [selectedTags, setSelectedTags] = useState([]); // This will store the actual tag array
+  const [customTagInput, setCustomTagInput] = useState(""); // For new custom tags
   const [mainImage, setMainImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -20,11 +25,10 @@ const BlogCreatePage = () => {
   const navigate = useNavigate();
   const successMessageRef = useRef(null);
 
-  // Add effect to handle navigation after success message and scroll to success message
+  // Effect for handling navigation remains the same
   useEffect(() => {
     let timeoutId;
     if (successMessage) {
-      // Scroll to success message
       if (successMessageRef.current) {
         successMessageRef.current.scrollIntoView({
           behavior: "smooth",
@@ -32,25 +36,99 @@ const BlogCreatePage = () => {
         });
       }
 
-      // Navigate to blog after showing success message
       timeoutId = setTimeout(() => {
         if (successMessage.blogId) {
-          navigate(`/blog/${successMessage.blogId}`);
+          navigate(`/blog/${successMessage.blogId}-${getSlug(title)}`);
         }
-      }, 3000);
+      }, 1500);
     }
 
-    // Clean up timeout if component unmounts
     return () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [successMessage, navigate]);
+  const getSlug = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  };
+  // Updated fetch tags function
+  useEffect(() => {
+    const fetchTags = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const tagsData = await getRequest("tags");
+        if (tagsData) {
+          setAvailableTags(tagsData);
+        } else {
+          setError("Failed to fetch tags. Please try again later.");
+        }
+      } catch (error) {
+        setError("Failed to fetch tags. Please try again later.");
+        console.error("Error fetching tags:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  // Extract tag names for display (like in EditPage)
+  const getTagString = (tags) => {
+    if (!tags || !Array.isArray(tags)) return "";
+    return tags.join(", ");
+  };
+
+  // Handle tag input change
+  const handleTagChange = (e) => {
+    const tagInput = e.target.value;
+    // Split by comma, trim whitespace, and filter out empty tags
+    const tags = tagInput
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag);
+
+    setSelectedTags(tags);
+  };
+
+  // Handle adding custom tags
+  const handleAddCustomTag = () => {
+    const newTag = customTagInput.trim();
+
+    // Validate the tag is not empty and not already in the list
+    if (newTag && !selectedTags.includes(newTag)) {
+      setSelectedTags([...selectedTags, newTag]);
+      setCustomTagInput(""); // Clear input after adding
+    }
+  };
 
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setMainImage(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      setMainImage(selectedFile);
+
+      // Create preview URL for the image
+      const previewUrl = URL.createObjectURL(selectedFile);
+      setImagePreview(previewUrl);
+    } else {
+      // Clear the image and preview if no file is selected
+      setMainImage(null);
+      setImagePreview(null);
     }
   };
+
+  useEffect(() => {
+    // Cleanup function to revoke object URL when component unmounts or when preview changes
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
 
   const handleEditorUpdate = (html) => {
     setContent(html);
@@ -69,37 +147,26 @@ const BlogCreatePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validate form
     const isValid = validateForm();
-    if (!isValid) {
-      return; // Stop submission if validation fails
-    }
+    if (!isValid) return;
 
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
 
-    // Create form data object
     const formData = new FormData();
 
-    // Convert tags string to array and create post request DTO
-    const tagsArray = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag);
     const postRequestDto = {
       title,
       content,
-      tags: tagsArray,
+      tags: selectedTags,
     };
 
-    // Add the post data as JSON string
     formData.append(
       "postRequestDto",
       new Blob([JSON.stringify(postRequestDto)], { type: "application/json" })
     );
 
-    // Add image if present
     if (mainImage) {
       formData.append("mainImage", mainImage);
     }
@@ -111,7 +178,6 @@ const BlogCreatePage = () => {
         throw new Error("Failed to create blog post");
       }
 
-      // Set success message with blog ID for navigation
       if (result.data) {
         setSuccessMessage({
           message: "Blog bol úspešne vytvorený!",
@@ -130,11 +196,13 @@ const BlogCreatePage = () => {
     }
   };
 
+  // Replace the tags section in the return
   return (
     <>
       <h1>Vytvorenie nového blogu</h1>
       <div className="create-post-container">
         <form className="create-blog-form">
+          {/* Title and content sections remain the same */}
           <div className="form-group">
             <label htmlFor="title">Nadpis:</label>
             <input
@@ -169,17 +237,87 @@ const BlogCreatePage = () => {
             )}
           </div>
 
+          {/* Updated tag section to match BlogEditPage */}
           <div className="form-group">
-            <label htmlFor="tags">Tagy (oddelené čiarkou):</label>
-            <input
-              type="text"
-              id="tags"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-              placeholder="tag1, tag2, tag3"
-            />
+            {availableTags.length > 0 && (
+              <div className="blogForm-tags-list">
+                <p>Dostupné kategórie:</p>
+                <div className="blogForm-tags-container">
+                  {availableTags.map((tag, index) => {
+                    const tagName = typeof tag === "object" ? tag.name : tag;
+                    const isSelected = selectedTags.includes(tagName);
+
+                    return (
+                      <div
+                        key={index}
+                        className={`blogForm-tag-item ${
+                          isSelected ? "selected" : ""
+                        }`}
+                        onClick={() => {
+                          // Toggle tag selection
+                          const updatedTags = isSelected
+                            ? selectedTags.filter((t) => t !== tagName)
+                            : [...selectedTags, tagName];
+
+                          setSelectedTags(updatedTags);
+                        }}
+                      >
+                        {tagName}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div className="blogForm-custom-tag-section">
+              <input
+                type="text"
+                placeholder="Pridať vlastnú kategóriu"
+                value={customTagInput}
+                onChange={(e) => setCustomTagInput(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddCustomTag();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={handleAddCustomTag}
+                disabled={!customTagInput.trim()}
+                className="blogForm-add-tag-button"
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
+
+            {/* Display selected tags for better visibility */}
+            {selectedTags.length > 0 && (
+              <div className="blogForm-selected-tags">
+                <p>Vybrané kategórie:</p>
+                <div className="blogForm-tags-container">
+                  {selectedTags.map((tag, index) => (
+                    <div
+                      key={index}
+                      className="blogForm-tag-item selected"
+                      onClick={() => {
+                        // Remove tag when clicked
+                        setSelectedTags(
+                          selectedTags.filter((_, i) => i !== index)
+                        );
+                      }}
+                    >
+                      {tag} ×
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
+          {/* Main image upload section */}
           <div className="form-group">
             <label htmlFor="mainImage">Hlavný obrázok:</label>
             <input
@@ -195,14 +333,27 @@ const BlogCreatePage = () => {
             {validationErrors.mainImage && (
               <p className="blogCreation-error-text">Obrázok je povinný</p>
             )}
+
+            {/* image preview */}
+            {imagePreview && (
+              <div className="blogForm-image-preview-container">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="blogForm-image-preview"
+                />
+              </div>
+            )}
           </div>
+
           <div className="form-group">
             <button type="submit" disabled={loading} onClick={handleSubmit}>
-              {loading ? "Creating..." : "Vytvoriť blog"}
+              {loading ? "Vytváram..." : "Vytvoriť"}
             </button>
           </div>
         </form>
 
+        {/* Error and success messages*/}
         {error && (
           <div className="blogCreation-error-message">
             <h3>Error:</h3>

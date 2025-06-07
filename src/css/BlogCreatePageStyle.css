@@ -78,7 +78,7 @@ label {
 }
 
 .tiptap-editor-content {
-  padding: 25px;
+  padding: 1px 20px;
   height: fit-content + 500px;
   background-color: white;
   color: var(--blog-detail-text-color);
@@ -140,7 +140,97 @@ code {
   text-decoration: underline;
   color: rgba(var(--orange-color), 1);
 }
+/* TAG SELECTION */
+.blogForm-tags-list p {
+  color: #555;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.blogForm-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
 
+.blogForm-tag-item {
+  background-color: lightgray;
+  padding: 6px 12px;
+  border-radius: 10px;
+  color: #555;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.blogForm-tag-item:hover {
+  background-color: rgba(var(--orange-color), 0.4);
+}
+
+.blogForm-tag-item.selected {
+  background-color: rgba(var(--orange-color), 1);
+  color: white;
+}
+/* Image preview */
+.blogForm-image-preview-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.blogForm-image-preview {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+/* Custom tag input section */
+.blogForm-custom-tag-section {
+  display: flex;
+  margin: 10px 0;
+  gap: 10px;
+  justify-content: center;
+}
+
+.blogForm-custom-tag-section input {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  flex-grow: 1;
+  max-width: 300px;
+}
+.blogForm-custom-tag-section button {
+  margin: 0 !important;
+}
+.blogForm-add-tag-button {
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  font-size: 14px !important;
+  border-radius: 50% !important; /* Makes it circular */
+}
+
+.blogForm-add-tag-button:hover:not(:disabled) {
+  background-color: rgba(var(--orange-color), 1);
+  color: white;
+  transform: scale(1.05);
+}
+
+.blogForm-add-tag-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.blogForm-selected-tags {
+  margin-top: 15px;
+}
+.blogForm-selected-tags p {
+  color: #555;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
 /* MESSAGES */
 .blogCreation-input-error {
   border: 2px solid #ff3b30;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TagButton from "./TagButton";
 import "../../css/Components/TagsList.css";
+import { getRequest } from "../../api/apiAccessHelper";
 
 const TagList = ({ activeTag, onSelectTag }) => {
   const [tags, setTags] = useState([]);
@@ -10,15 +11,16 @@ const TagList = ({ activeTag, onSelectTag }) => {
   //fetch tags from api/v1/tags
   useEffect(() => {
     const fetchTags = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const response = await fetch("http://localhost:8080/api/v1/tags", {
-          method: "GET",
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        const tagsData = await getRequest("tags");
+        if (tagsData) {
+          setTags(tagsData);
+        } else {
+          setError("Failed to fetch tags. Please try again later.");
         }
-        const tagsData = await response.json();
-        setTags(tagsData || []);
       } catch (error) {
         setError("Failed to fetch tags. Please try again later.");
         console.error("Error fetching tags:", error);
@@ -26,6 +28,7 @@ const TagList = ({ activeTag, onSelectTag }) => {
         setLoading(false);
       }
     };
+
     fetchTags();
   }, []);
   return (
